@@ -660,7 +660,7 @@ export default function FishingScreen() {
       )}
 
       {/* Fishing Line and Hook */}
-      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting') && (
+      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting' || gamePhase === 'reeling') && (
         <Svg
           style={styles.arcSvg}
           width={SCREEN_WIDTH}
@@ -685,7 +685,7 @@ export default function FishingScreen() {
       )}
 
       {/* Hook */}
-      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting') && (
+      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting' || gamePhase === 'reeling') && (
         <Animated.View
           style={[
             styles.hook,
