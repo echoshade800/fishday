@@ -78,7 +78,7 @@ export default function HomeScreen() {
 
           {/* Main title */}
           <View style={styles.titleSection}>
-            <Text style={styles.mainTitle}>Relax. Cast. Catch.</Text>
+            <Text style={styles.mainTitle}>FishyDay</Text>
             <Text style={styles.mainSubtitle}>A mini fishing game for quick breaks.</Text>
           </View>
 
