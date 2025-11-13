@@ -502,7 +502,11 @@ export default function FishingScreen() {
             },
           ]}
         >
-          <View style={styles.hookCircle} />
+          <Image
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/hook.jpg' }}
+            style={styles.hookImage}
+            resizeMode="contain"
+          />
         </Animated.View>
       )}
 
@@ -867,18 +871,9 @@ const styles = StyleSheet.create({
     height: 20,
     zIndex: 15,
   },
-  hookCircle: {
+  hookImage: {
     width: 20,
     height: 20,
-    borderRadius: 10,
-    backgroundColor: '#DC2626',
-    borderWidth: 2,
-    borderColor: '#991B1B',
-    shadowColor: '#DC2626',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 6,
-    elevation: 10,
   },
   splash: {
     position: 'absolute',
