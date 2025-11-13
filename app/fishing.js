@@ -4,7 +4,7 @@
  * Extension: Add animations, sound effects, advanced mini-games
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -19,6 +19,26 @@ const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
 const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
 const CHARACTER_X = SCREEN_WIDTH * 0.5;
 const CHARACTER_Y = SCREEN_HEIGHT * 0.65;
+const NUM_FISH = 10;
+
+const createSwimmingFish = (index) => {
+  const startX = Math.random() * SCREEN_WIDTH;
+  const startY = SEA_AREA_TOP + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP);
+  const speed = 1 + Math.random() * 2;
+  const direction = Math.random() > 0.5 ? 1 : -1;
+  const size = 20 + Math.random() * 20;
+
+  return {
+    id: index,
+    startX,
+    startY,
+    speed,
+    direction,
+    size,
+    animX: new Animated.Value(startX),
+    animY: new Animated.Value(startY),
+  };
+};
 
 export default function FishingScreen() {
   const router = useRouter();
@@ -36,6 +56,10 @@ export default function FishingScreen() {
   const highlightScale = useRef(new Animated.Value(1)).current;
   const arcGlowAnim = useRef(new Animated.Value(0)).current;
   const rippleAnim = useRef(new Animated.Value(0)).current;
+
+  const swimmingFish = useMemo(() => {
+    return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
+  }, []);
 
   useEffect(() => {
     const pulseAnimation = Animated.loop(
@@ -112,6 +136,52 @@ export default function FishingScreen() {
       rippleAnim.setValue(0);
     }
   }, [isDragging]);
+
+  useEffect(() => {
+    const animations = swimmingFish.map((fish) => {
+      const animateFish = () => {
+        const targetX = Math.random() * SCREEN_WIDTH;
+        const targetY = SEA_AREA_TOP + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP);
+        const distance = Math.sqrt(
+          Math.pow(targetX - fish.animX._value, 2) +
+          Math.pow(targetY - fish.animY._value, 2)
+        );
+        const duration = (distance / fish.speed) * 100;
+
+        return Animated.parallel([
+          Animated.timing(fish.animX, {
+            toValue: targetX,
+            duration: duration,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fish.animY, {
+            toValue: targetY,
+            duration: duration,
+            useNativeDriver: true,
+          }),
+        ]);
+      };
+
+      const loopAnimation = () => {
+        Animated.loop(
+          Animated.sequence([
+            animateFish(),
+            Animated.delay(Math.random() * 500),
+          ])
+        ).start();
+      };
+
+      loopAnimation();
+    });
+
+    return () => {
+      animations.forEach((anim) => {
+        if (anim && anim.stop) {
+          anim.stop();
+        }
+      });
+    };
+  }, [swimmingFish]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -281,6 +351,25 @@ export default function FishingScreen() {
           </View>
         </View>
       )}
+
+      {/* Swimming Fish */}
+      {swimmingFish.map((fish) => (
+        <Animated.View
+          key={fish.id}
+          style={[
+            styles.swimmingFish,
+            {
+              transform: [
+                { translateX: fish.animX },
+                { translateY: fish.animY },
+                { scaleX: fish.direction },
+              ],
+            },
+          ]}
+        >
+          <FishIcon size={fish.size} color="rgba(59, 130, 246, 0.7)" strokeWidth={2} />
+        </Animated.View>
+      ))}
 
       {/* Character Image */}
       <Image
@@ -537,5 +626,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: '#78350F',
+  },
+  swimmingFish: {
+    position: 'absolute',
+    zIndex: 3,
   },
 });
