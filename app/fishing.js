@@ -497,8 +497,8 @@ export default function FishingScreen() {
           style={[
             styles.hook,
             {
-              left: Animated.subtract(hookX, 10),
-              top: Animated.subtract(hookY, 10),
+              left: Animated.subtract(hookX, 20),
+              top: Animated.subtract(hookY, 20),
             },
           ]}
         >
@@ -867,13 +867,13 @@ const styles = StyleSheet.create({
   },
   hook: {
     position: 'absolute',
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
     zIndex: 15,
   },
   hookImage: {
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
   },
   splash: {
     position: 'absolute',
