@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
-    zIndex: 100,
+    zIndex: 200,
   },
   backButtonCircle: {
     width: 50,
