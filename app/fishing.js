@@ -82,6 +82,7 @@ export default function FishingScreen() {
   const exclamationOpacity = useRef(new Animated.Value(0)).current;
 
   const pointerRotation = useRef(new Animated.Value(0)).current;
+  const currentRotationRef = useRef(0);
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -336,6 +337,12 @@ export default function FishingScreen() {
     }
   }, [gamePhase]);
 
+  useEffect(() => {
+    return () => {
+      pointerRotation.removeAllListeners();
+    };
+  }, []);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -504,17 +511,26 @@ export default function FishingScreen() {
 
   const startPointerRotation = () => {
     pointerRotation.setValue(0);
-    Animated.loop(
+    currentRotationRef.current = 0;
+
+    const rotationAnimation = Animated.loop(
       Animated.timing(pointerRotation, {
         toValue: 360,
         duration: 2000,
         useNativeDriver: true,
       })
-    ).start();
+    );
+
+    pointerRotation.addListener(({ value }) => {
+      currentRotationRef.current = value % 360;
+    });
+
+    rotationAnimation.start();
+    return rotationAnimation;
   };
 
   const handleReelingTap = async () => {
-    const currentRotation = pointerRotation._value % 360;
+    const currentRotation = currentRotationRef.current;
     const isInTarget = currentRotation >= targetZoneStart && currentRotation <= targetZoneEnd;
 
     if (isInTarget) {
@@ -526,6 +542,7 @@ export default function FishingScreen() {
         setCaughtFish(fish);
         setGamePhase('success');
         pointerRotation.stopAnimation();
+        pointerRotation.removeAllListeners();
         await addCatch(fish);
       } else {
         generateNewTargetZone();
@@ -537,6 +554,7 @@ export default function FishingScreen() {
       if (newFailCount >= 2) {
         setGamePhase('fail');
         pointerRotation.stopAnimation();
+        pointerRotation.removeAllListeners();
       }
     }
   };
