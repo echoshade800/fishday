@@ -510,6 +510,7 @@ export default function FishingScreen() {
   };
 
   const startPointerRotation = () => {
+    console.log('Starting pointer rotation...');
     pointerRotation.setValue(0);
     currentRotationRef.current = 0;
 
@@ -524,9 +525,13 @@ export default function FishingScreen() {
 
     pointerRotation.addListener(({ value }) => {
       currentRotationRef.current = value % 360;
+      if (Math.floor(value) % 90 === 0) {
+        console.log('Rotation value:', value);
+      }
     });
 
     rotationAnimation.start();
+    console.log('Rotation animation started');
     return rotationAnimation;
   };
 
@@ -950,8 +955,6 @@ export default function FishingScreen() {
                   styles.pointer,
                   {
                     transform: [
-                      { translateX: 100 },
-                      { translateY: 100 },
                       {
                         rotate: pointerRotation.interpolate({
                           inputRange: [0, 360],
@@ -1492,8 +1495,12 @@ const styles = StyleSheet.create({
   },
   pointer: {
     position: 'absolute',
-    width: 0,
-    height: 0,
+    width: 20,
+    height: 20,
+    top: '50%',
+    left: '50%',
+    marginLeft: -10,
+    marginTop: -10,
     zIndex: 10,
   },
   pointerTriangle: {
