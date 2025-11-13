@@ -657,5 +657,6 @@ const styles = StyleSheet.create({
   swimmingFish: {
     position: 'absolute',
     zIndex: 3,
+    opacity: 0.35,
   },
 });
