@@ -587,7 +587,7 @@ export default function FishingScreen() {
             />
 
             <Image
-              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton.png' }}
+              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton1.jpg' }}
               style={styles.dragButton}
               resizeMode="contain"
             />
@@ -598,7 +598,7 @@ export default function FishingScreen() {
         {gamePhase === 'waiting' && (
           <View style={styles.dragButtonContainer}>
             <Image
-              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.png' }}
+              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
               style={styles.dragButton}
               resizeMode="contain"
             />
