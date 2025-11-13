@@ -905,7 +905,7 @@ export default function FishingScreen() {
             </View>
 
             <View style={styles.circleContainer}>
-              <Svg width={300} height={300}>
+              <Svg width={200} height={200}>
                 <Defs>
                   <LinearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <Stop offset="0%" stopColor="#3B82F6" stopOpacity="1" />
@@ -915,16 +915,16 @@ export default function FishingScreen() {
 
                 {/* Main Circle */}
                 <Path
-                  d="M 150 30 A 120 120 0 1 1 149.99 30"
+                  d="M 100 20 A 80 80 0 1 1 99.99 20"
                   stroke="url(#circleGradient)"
-                  strokeWidth="20"
+                  strokeWidth="15"
                   fill="none"
                   strokeLinecap="round"
                 />
 
                 {/* Target Zone (Yellow) */}
                 <Path
-                  d={`M 150 150 L ${150 + 120 * Math.cos((targetZoneStart - 90) * Math.PI / 180)} ${150 + 120 * Math.sin((targetZoneStart - 90) * Math.PI / 180)} A 120 120 0 ${(targetZoneEnd - targetZoneStart) > 180 ? 1 : 0} 1 ${150 + 120 * Math.cos((targetZoneEnd - 90) * Math.PI / 180)} ${150 + 120 * Math.sin((targetZoneEnd - 90) * Math.PI / 180)} Z`}
+                  d={`M 100 100 L ${100 + 80 * Math.cos((targetZoneStart - 90) * Math.PI / 180)} ${100 + 80 * Math.sin((targetZoneStart - 90) * Math.PI / 180)} A 80 80 0 ${(targetZoneEnd - targetZoneStart) > 180 ? 1 : 0} 1 ${100 + 80 * Math.cos((targetZoneEnd - 90) * Math.PI / 180)} ${100 + 80 * Math.sin((targetZoneEnd - 90) * Math.PI / 180)} Z`}
                   fill="#FCD34D"
                   opacity="0.9"
                 />
@@ -935,15 +935,15 @@ export default function FishingScreen() {
                   styles.pointer,
                   {
                     transform: [
-                      { translateX: 150 },
-                      { translateY: 150 },
+                      { translateX: 100 },
+                      { translateY: 100 },
                       {
                         rotate: pointerRotation.interpolate({
                           inputRange: [0, 360],
                           outputRange: ['0deg', '360deg'],
                         }),
                       },
-                      { translateY: -120 },
+                      { translateY: -80 },
                     ],
                   },
                 ]}
@@ -1435,33 +1435,36 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0,
-    justifyContent: 'flex-end',
+    bottom: SCREEN_HEIGHT * 0.05,
     alignItems: 'center',
-    zIndex: 2000,
+    zIndex: 600,
   },
   reelingContainer: {
     alignItems: 'center',
-    paddingBottom: 40,
     paddingHorizontal: 20,
   },
   reelingProgressContainer: {
-    marginBottom: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    marginBottom: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#3B82F6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   reelingProgress: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: '#1E293B',
   },
   circleContainer: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -1477,19 +1480,19 @@ const styles = StyleSheet.create({
     height: 0,
     backgroundColor: 'transparent',
     borderStyle: 'solid',
-    borderLeftWidth: 15,
-    borderRightWidth: 15,
-    borderBottomWidth: 30,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 20,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: '#EF4444',
-    marginLeft: -15,
+    marginLeft: -10,
   },
   reelingButton: {
     position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: '#10B981',
     justifyContent: 'center',
     alignItems: 'center',
@@ -1498,11 +1501,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 12,
     elevation: 10,
-    borderWidth: 4,
+    borderWidth: 3,
     borderColor: '#FFFFFF',
   },
   reelingButtonText: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '700',
     color: '#FFFFFF',
     letterSpacing: 1,
