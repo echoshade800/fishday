@@ -60,6 +60,7 @@ export default function OnboardingScreen() {
             title="Get Started"
             onPress={handleGetStarted}
             style={styles.button}
+            textStyle={styles.buttonText}
           />
 
           <Text style={styles.privacy}>
@@ -142,6 +143,10 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 16,
     backgroundColor: '#FFFFFF',
+  },
+  buttonText: {
+    color: '#0891B2',
+    fontWeight: 'bold',
   },
   privacy: {
     fontSize: 12,
