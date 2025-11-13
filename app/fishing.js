@@ -44,6 +44,7 @@ const createSwimmingFish = (index) => {
 export default function FishingScreen() {
   const router = useRouter();
 
+  const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
   const [castPosition, setCastPosition] = useState({
     x: SCREEN_WIDTH / 2,
@@ -57,6 +58,10 @@ export default function FishingScreen() {
   const highlightScale = useRef(new Animated.Value(1)).current;
   const arcGlowAnim = useRef(new Animated.Value(0)).current;
   const rippleAnim = useRef(new Animated.Value(0)).current;
+  const hookX = useRef(new Animated.Value(CHARACTER_X + 6)).current;
+  const hookY = useRef(new Animated.Value(CHARACTER_Y)).current;
+  const splashScale = useRef(new Animated.Value(0)).current;
+  const splashOpacity = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -256,16 +261,81 @@ export default function FishingScreen() {
           }),
         ]).start();
 
-        console.log('Cast at position:', castPosition);
+        performCast();
       },
     })
   ).current;
+
+  const performCast = () => {
+    setGamePhase('casting');
+
+    const startX = CHARACTER_X + 6;
+    const startY = CHARACTER_Y;
+    const endX = castPosition.x;
+    const endY = castPosition.y;
+
+    Animated.parallel([
+      Animated.timing(hookX, {
+        toValue: endX,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(hookY, {
+        toValue: endY,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(splashScale, {
+            toValue: 1.5,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(splashOpacity, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(splashScale, {
+            toValue: 2,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(splashOpacity, {
+            toValue: 0,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start(() => {
+        setGamePhase('waiting');
+      });
+    });
+  };
 
   const generateArcPath = () => {
     const startX = CHARACTER_X + 6;
     const startY = CHARACTER_Y;
     const endX = castPosition.x;
     const endY = castPosition.y;
+
+    const midX = (startX + endX) / 2;
+    const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+    const curveHeight = distance * 0.4;
+    const controlY = Math.min(startY, endY) - curveHeight;
+
+    return `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`;
+  };
+
+  const generateHookPath = () => {
+    const startX = CHARACTER_X + 6;
+    const startY = CHARACTER_Y;
+    const endX = hookX._value;
+    const endY = hookY._value;
 
     const midX = (startX + endX) / 2;
     const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
@@ -377,6 +447,66 @@ export default function FishingScreen() {
         </View>
       )}
 
+      {/* Fishing Line and Hook */}
+      {(gamePhase === 'casting' || gamePhase === 'waiting') && (
+        <Svg
+          style={styles.arcSvg}
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
+        >
+          <Defs>
+            <LinearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <Stop offset="0%" stopColor="#334155" stopOpacity="0.6" />
+              <Stop offset="50%" stopColor="#475569" stopOpacity="0.8" />
+              <Stop offset="100%" stopColor="#64748b" stopOpacity="0.6" />
+            </LinearGradient>
+          </Defs>
+          <Path
+            d={generateHookPath()}
+            stroke="url(#lineGradient)"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </Svg>
+      )}
+
+      {/* Hook */}
+      {(gamePhase === 'casting' || gamePhase === 'waiting') && (
+        <Animated.View
+          style={[
+            styles.hook,
+            {
+              transform: [
+                { translateX: hookX },
+                { translateY: hookY },
+              ],
+            },
+          ]}
+        >
+          <View style={styles.hookCircle} />
+        </Animated.View>
+      )}
+
+      {/* Splash Effect */}
+      {gamePhase === 'casting' && (
+        <Animated.View
+          style={[
+            styles.splash,
+            {
+              left: castPosition.x - 30,
+              top: castPosition.y - 30,
+              transform: [{ scale: splashScale }],
+              opacity: splashOpacity,
+            },
+          ]}
+        >
+          <View style={styles.splashRing1} />
+          <View style={styles.splashRing2} />
+          <View style={styles.splashRing3} />
+        </Animated.View>
+      )}
+
       {/* Swimming Fish */}
       {swimmingFish.map((fish, index) => (
         <Animated.Image
@@ -417,41 +547,63 @@ export default function FishingScreen() {
         </TouchableOpacity>
 
         {/* Top Instruction Text */}
-        <View style={styles.instructionContainer}>
-          <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
-          <Text style={styles.instructionText}>Drag button to cast</Text>
-        </View>
+        {gamePhase === 'ready' && (
+          <View style={styles.instructionContainer}>
+            <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
+            <Text style={styles.instructionText}>Drag button to cast</Text>
+          </View>
+        )}
+
+        {gamePhase === 'waiting' && (
+          <View style={styles.instructionContainer}>
+            <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
+            <Text style={styles.instructionText}>Wait patiently for fish to bite</Text>
+          </View>
+        )}
 
         {/* Drag to Cast button */}
-        <Animated.View
-          style={[
-            styles.dragButtonContainer,
-            {
-              transform: [
-                { scale: isDragging ? 1 : dragButtonScale },
-                { translateY: isDragging ? 0 : dragButtonY },
-              ],
-            },
-          ]}
-          {...panResponder.panHandlers}
-        >
-          {/* Outer Ring */}
+        {gamePhase === 'ready' && (
           <Animated.View
             style={[
-              styles.outerRing,
+              styles.dragButtonContainer,
               {
-                transform: [{ scale: outerRingScale }],
-                opacity: outerRingOpacity,
+                transform: [
+                  { scale: isDragging ? 1 : dragButtonScale },
+                  { translateY: isDragging ? 0 : dragButtonY },
+                ],
               },
             ]}
-          />
+            {...panResponder.panHandlers}
+          >
+            {/* Outer Ring */}
+            <Animated.View
+              style={[
+                styles.outerRing,
+                {
+                  transform: [{ scale: outerRingScale }],
+                  opacity: outerRingOpacity,
+                },
+              ]}
+            />
 
-          <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton.png' }}
-            style={styles.dragButton}
-            resizeMode="contain"
-          />
-        </Animated.View>
+            <Image
+              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton.png' }}
+              style={styles.dragButton}
+              resizeMode="contain"
+            />
+          </Animated.View>
+        )}
+
+        {/* Pull Rod button */}
+        {gamePhase === 'waiting' && (
+          <View style={styles.dragButtonContainer}>
+            <Image
+              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.png' }}
+              style={styles.dragButton}
+              resizeMode="contain"
+            />
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );
@@ -658,5 +810,59 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 3,
     opacity: 0.35,
+  },
+  hook: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    zIndex: 15,
+  },
+  hookCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#DC2626',
+    borderWidth: 2,
+    borderColor: '#991B1B',
+    shadowColor: '#DC2626',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    elevation: 10,
+  },
+  splash: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 12,
+  },
+  splashRing1: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(147, 197, 253, 0.3)',
+  },
+  splashRing2: {
+    position: 'absolute',
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: 'rgba(147, 197, 253, 0.2)',
+  },
+  splashRing3: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'rgba(147, 197, 253, 0.15)',
   },
 });
