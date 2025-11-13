@@ -62,6 +62,10 @@ export default function FishingScreen() {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
   }, []);
 
+  const [fishDirections, setFishDirections] = useState(
+    swimmingFish.map(fish => fish.direction)
+  );
+
   useEffect(() => {
     const pulseAnimation = Animated.loop(
       Animated.sequence([
@@ -139,13 +143,22 @@ export default function FishingScreen() {
   }, [isDragging]);
 
   useEffect(() => {
-    const animations = swimmingFish.map((fish) => {
+    const animations = swimmingFish.map((fish, index) => {
       const animateFish = () => {
         const padding = 40;
+        const currentX = fish.animX._value;
         const targetX = padding + Math.random() * (SCREEN_WIDTH - padding * 2);
         const targetY = SEA_AREA_TOP + padding + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP - padding * 2);
+
+        const newDirection = targetX > currentX ? 1 : -1;
+        setFishDirections(prev => {
+          const updated = [...prev];
+          updated[index] = newDirection;
+          return updated;
+        });
+
         const distance = Math.sqrt(
-          Math.pow(targetX - fish.animX._value, 2) +
+          Math.pow(targetX - currentX, 2) +
           Math.pow(targetY - fish.animY._value, 2)
         );
         const duration = (distance / fish.speed) * 100;
@@ -355,7 +368,7 @@ export default function FishingScreen() {
       )}
 
       {/* Swimming Fish */}
-      {swimmingFish.map((fish) => (
+      {swimmingFish.map((fish, index) => (
         <Animated.Image
           key={fish.id}
           source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/smallfish.png' }}
@@ -367,7 +380,7 @@ export default function FishingScreen() {
               transform: [
                 { translateX: fish.animX },
                 { translateY: fish.animY },
-                { scaleX: fish.direction },
+                { scaleX: fishDirections[index] },
               ],
             },
           ]}
