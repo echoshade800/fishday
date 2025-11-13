@@ -844,44 +844,48 @@ export default function FishingScreen() {
           </Animated.View>
         )}
 
-        {/* Pull Rod button */}
-        {(gamePhase === 'waiting' || gamePhase === 'biting') && (
-          <TouchableOpacity
-            style={[styles.dragButtonContainer, gamePhase === 'waiting' && styles.buttonDisabled]}
-            onPress={() => {
-              console.log('Button pressed, gamePhase:', gamePhase);
-              if (gamePhase === 'biting') {
-                console.log('Starting reeling game...');
-                if (bitingTimeoutRef.current) {
-                  clearTimeout(bitingTimeoutRef.current);
-                  bitingTimeoutRef.current = null;
-                }
-                setMissedCount(0);
-                startReelingGame();
-              }
-            }}
-            activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
-            disabled={gamePhase !== 'biting'}
-          >
-            {gamePhase === 'biting' && (
-              <Animated.View
-                style={[
-                  styles.reelGlowRing,
-                  {
-                    transform: [{ scale: reelGlowScale }],
-                    opacity: reelGlowOpacity,
-                  },
-                ]}
-              />
-            )}
-            <Image
-              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
-              style={styles.dragButton}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        )}
       </SafeAreaView>
+
+      {/* Pull Rod button - Outside SafeAreaView for better touch handling */}
+      {(gamePhase === 'waiting' || gamePhase === 'biting') && (
+        <TouchableOpacity
+          style={[styles.dragButtonContainer, gamePhase === 'waiting' && styles.buttonDisabled]}
+          onPress={() => {
+            console.log('Button pressed, gamePhase:', gamePhase);
+            if (gamePhase === 'biting') {
+              console.log('Starting reeling game...');
+              if (bitingTimeoutRef.current) {
+                clearTimeout(bitingTimeoutRef.current);
+                bitingTimeoutRef.current = null;
+              }
+              setMissedCount(0);
+              startReelingGame();
+            }
+          }}
+          activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
+          disabled={gamePhase !== 'biting'}
+          pointerEvents="auto"
+        >
+          {gamePhase === 'biting' && (
+            <Animated.View
+              style={[
+                styles.reelGlowRing,
+                {
+                  transform: [{ scale: reelGlowScale }],
+                  opacity: reelGlowOpacity,
+                },
+              ]}
+              pointerEvents="none"
+            />
+          )}
+          <Image
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
+            style={styles.dragButton}
+            resizeMode="contain"
+            pointerEvents="none"
+          />
+        </TouchableOpacity>
+      )}
 
       {/* Reeling Mini-game */}
       {gamePhase === 'reeling' && (
@@ -1253,7 +1257,8 @@ const styles = StyleSheet.create({
     bottom: 80,
     right: 40,
     alignItems: 'center',
-    zIndex: 150,
+    zIndex: 500,
+    elevation: 500,
   },
   buttonDisabled: {
     opacity: 0.5,
