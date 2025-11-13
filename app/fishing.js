@@ -22,8 +22,9 @@ const CHARACTER_Y = SCREEN_HEIGHT * 0.65;
 const NUM_FISH = 10;
 
 const createSwimmingFish = (index) => {
-  const startX = Math.random() * SCREEN_WIDTH;
-  const startY = SEA_AREA_TOP + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP);
+  const padding = 40;
+  const startX = padding + Math.random() * (SCREEN_WIDTH - padding * 2);
+  const startY = SEA_AREA_TOP + padding + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP - padding * 2);
   const speed = 1 + Math.random() * 2;
   const direction = Math.random() > 0.5 ? 1 : -1;
   const size = 20 + Math.random() * 20;
@@ -140,8 +141,9 @@ export default function FishingScreen() {
   useEffect(() => {
     const animations = swimmingFish.map((fish) => {
       const animateFish = () => {
-        const targetX = Math.random() * SCREEN_WIDTH;
-        const targetY = SEA_AREA_TOP + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP);
+        const padding = 40;
+        const targetX = padding + Math.random() * (SCREEN_WIDTH - padding * 2);
+        const targetY = SEA_AREA_TOP + padding + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP - padding * 2);
         const distance = Math.sqrt(
           Math.pow(targetX - fish.animX._value, 2) +
           Math.pow(targetY - fish.animY._value, 2)
@@ -354,11 +356,14 @@ export default function FishingScreen() {
 
       {/* Swimming Fish */}
       {swimmingFish.map((fish) => (
-        <Animated.View
+        <Animated.Image
           key={fish.id}
+          source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/smallfish.png' }}
           style={[
             styles.swimmingFish,
             {
+              width: fish.size * 2,
+              height: fish.size * 2,
               transform: [
                 { translateX: fish.animX },
                 { translateY: fish.animY },
@@ -366,9 +371,8 @@ export default function FishingScreen() {
               ],
             },
           ]}
-        >
-          <FishIcon size={fish.size} color="rgba(59, 130, 246, 0.7)" strokeWidth={2} />
-        </Animated.View>
+          resizeMode="contain"
+        />
       ))}
 
       {/* Character Image */}
