@@ -342,9 +342,9 @@ const styles = StyleSheet.create({
   },
   outerRing: {
     position: 'absolute',
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
     borderWidth: 3,
     borderColor: 'rgba(59, 130, 246, 0.4)',
@@ -353,8 +353,8 @@ const styles = StyleSheet.create({
     left: -30,
   },
   dragButton: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
   },
   dragHint: {
     marginTop: 8,
