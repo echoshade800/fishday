@@ -79,7 +79,7 @@ export default function HomeScreen() {
           {/* Main title */}
           <View style={styles.titleSection}>
             <Text style={styles.mainTitle}>FishyDay</Text>
-            <Text style={styles.mainSubtitle}>A mini fishing game for quick breaks.</Text>
+            <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
           </View>
 
           {/* Feature cards */}
