@@ -63,6 +63,11 @@ export default function FishingScreen() {
   const hookY = useRef(new Animated.Value(CHARACTER_Y)).current;
   const splashScale = useRef(new Animated.Value(0)).current;
   const splashOpacity = useRef(new Animated.Value(0)).current;
+  const hookBounce = useRef(new Animated.Value(0)).current;
+  const reelGlowScale = useRef(new Animated.Value(1)).current;
+  const reelGlowOpacity = useRef(new Animated.Value(0)).current;
+  const exclamationScale = useRef(new Animated.Value(0)).current;
+  const exclamationOpacity = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -214,6 +219,76 @@ export default function FishingScreen() {
     });
   }, [swimmingFish]);
 
+  useEffect(() => {
+    if (gamePhase === 'biting') {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(hookBounce, {
+            toValue: -15,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(hookBounce, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      Animated.loop(
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(reelGlowScale, {
+              toValue: 1.3,
+              duration: 800,
+              useNativeDriver: true,
+            }),
+            Animated.timing(reelGlowOpacity, {
+              toValue: 0.8,
+              duration: 800,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.parallel([
+            Animated.timing(reelGlowScale, {
+              toValue: 1,
+              duration: 800,
+              useNativeDriver: true,
+            }),
+            Animated.timing(reelGlowOpacity, {
+              toValue: 0.3,
+              duration: 800,
+              useNativeDriver: true,
+            }),
+          ]),
+        ])
+      ).start();
+
+      Animated.sequence([
+        Animated.parallel([
+          Animated.spring(exclamationScale, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 5,
+          }),
+          Animated.timing(exclamationOpacity, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
+    } else {
+      hookBounce.setValue(0);
+      reelGlowScale.setValue(1);
+      reelGlowOpacity.setValue(0);
+      exclamationScale.setValue(0);
+      exclamationOpacity.setValue(0);
+    }
+  }, [gamePhase]);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -333,6 +408,11 @@ export default function FishingScreen() {
         ]),
       ]).start(() => {
         setGamePhase('waiting');
+
+        const randomDelay = 2000 + Math.random() * 3000;
+        setTimeout(() => {
+          setGamePhase('biting');
+        }, randomDelay);
       });
     });
   };
@@ -468,7 +548,7 @@ export default function FishingScreen() {
       )}
 
       {/* Fishing Line and Hook */}
-      {(gamePhase === 'casting' || gamePhase === 'waiting') && (
+      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting') && (
         <Svg
           style={styles.arcSvg}
           width={SCREEN_WIDTH}
@@ -492,13 +572,14 @@ export default function FishingScreen() {
       )}
 
       {/* Hook */}
-      {(gamePhase === 'casting' || gamePhase === 'waiting') && (
+      {(gamePhase === 'casting' || gamePhase === 'waiting' || gamePhase === 'biting') && (
         <Animated.View
           style={[
             styles.hook,
             {
               left: Animated.subtract(hookX, 20),
               top: Animated.subtract(hookY, 20),
+              transform: [{ translateY: gamePhase === 'biting' ? hookBounce : 0 }],
             },
           ]}
         >
@@ -557,6 +638,21 @@ export default function FishingScreen() {
         resizeMode="contain"
       />
 
+      {/* Exclamation Mark */}
+      {gamePhase === 'biting' && (
+        <Animated.Image
+          source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/Exclamationmark.png' }}
+          style={[
+            styles.exclamationMark,
+            {
+              transform: [{ scale: exclamationScale }],
+              opacity: exclamationOpacity,
+            },
+          ]}
+          resizeMode="contain"
+        />
+      )}
+
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
         {/* Back button */}
         <TouchableOpacity
@@ -581,6 +677,13 @@ export default function FishingScreen() {
           <View style={styles.instructionContainer}>
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
             <Text style={styles.instructionText}>Waiting for fish...</Text>
+          </View>
+        )}
+
+        {gamePhase === 'biting' && (
+          <View style={styles.instructionContainer}>
+            <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
+            <Text style={styles.instructionText}>Tap to reel in!</Text>
           </View>
         )}
 
@@ -618,8 +721,19 @@ export default function FishingScreen() {
         )}
 
         {/* Pull Rod button */}
-        {gamePhase === 'waiting' && (
+        {(gamePhase === 'waiting' || gamePhase === 'biting') && (
           <View style={styles.dragButtonContainer}>
+            {gamePhase === 'biting' && (
+              <Animated.View
+                style={[
+                  styles.reelGlowRing,
+                  {
+                    transform: [{ scale: reelGlowScale }],
+                    opacity: reelGlowOpacity,
+                  },
+                ]}
+              />
+            )}
             <Image
               source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
               style={styles.dragButton}
@@ -774,6 +888,14 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.4,
     zIndex: 10,
   },
+  exclamationMark: {
+    position: 'absolute',
+    bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.4,
+    left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 30,
+    width: 60,
+    height: 60,
+    zIndex: 11,
+  },
   safeArea: {
     flex: 1,
   },
@@ -845,6 +967,21 @@ const styles = StyleSheet.create({
   dragButton: {
     width: 100,
     height: 100,
+  },
+  reelGlowRing: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+    borderWidth: 4,
+    borderColor: '#FBBF24',
+    top: -20,
+    left: -20,
+    shadowColor: '#FBBF24',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 12,
   },
   dragHint: {
     marginTop: 8,
