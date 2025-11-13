@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder, Easing } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
@@ -517,7 +517,8 @@ export default function FishingScreen() {
       Animated.timing(pointerRotation, {
         toValue: 360,
         duration: 2000,
-        useNativeDriver: true,
+        easing: Easing.linear,
+        useNativeDriver: false,
       })
     );
 
@@ -560,6 +561,8 @@ export default function FishingScreen() {
   };
 
   const handleRestart = () => {
+    pointerRotation.stopAnimation();
+    pointerRotation.removeAllListeners();
     setGamePhase('ready');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
