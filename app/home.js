@@ -45,7 +45,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <ImageBackground
-        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
+        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -60,7 +60,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
+      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
