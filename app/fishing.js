@@ -219,12 +219,6 @@ export default function FishingScreen() {
           <View style={styles.dragButton}>
             <FishIcon size={40} color="#FFFFFF" strokeWidth={2.5} />
           </View>
-
-          {!isDragging && (
-            <View style={styles.dragHint}>
-              <Text style={styles.dragHintText}>Drag to Cast</Text>
-            </View>
-          )}
         </Animated.View>
       </SafeAreaView>
     </View>
