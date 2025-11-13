@@ -152,18 +152,20 @@ export default function FishingScreen() {
 
       {/* Cast Position Highlight */}
       {isDragging && (
-        <Animated.Image
-          source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/circlelight.png' }}
+        <Animated.View
           style={[
             styles.castHighlight,
             {
               left: castPosition.x - 60,
-              top: castPosition.y - 60,
+              top: castPosition.y - 40,
               transform: [{ scale: highlightScale }],
             },
           ]}
-          resizeMode="contain"
-        />
+        >
+          <View style={styles.highlightOuter} />
+          <View style={styles.highlightInner} />
+          <View style={styles.highlightCenter} />
+        </Animated.View>
       )}
 
       {/* Character Image */}
@@ -240,8 +242,40 @@ const styles = StyleSheet.create({
   castHighlight: {
     position: 'absolute',
     width: 120,
-    height: 120,
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 10,
+  },
+  highlightOuter: {
+    position: 'absolute',
+    width: 120,
+    height: 80,
+    borderRadius: 60,
+    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    borderWidth: 2,
+    borderColor: 'rgba(59, 130, 246, 0.4)',
+  },
+  highlightInner: {
+    position: 'absolute',
+    width: 80,
+    height: 54,
+    borderRadius: 40,
+    backgroundColor: 'rgba(96, 165, 250, 0.3)',
+    borderWidth: 2,
+    borderColor: 'rgba(96, 165, 250, 0.6)',
+  },
+  highlightCenter: {
+    position: 'absolute',
+    width: 40,
+    height: 27,
+    borderRadius: 20,
+    backgroundColor: 'rgba(147, 197, 253, 0.5)',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 8,
   },
   characterImage: {
     position: 'absolute',
