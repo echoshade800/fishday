@@ -5,10 +5,9 @@
  */
 
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ImageBackground } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '../store/gameStore';
 import Card from '../components/Card';
 import Button from '../components/Button';
@@ -49,18 +48,26 @@ export default function HomeScreen() {
 
   if (isLoading) {
     return (
-      <LinearGradient colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']} style={styles.gradient}>
+      <ImageBackground
+        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
         </SafeAreaView>
-      </LinearGradient>
+      </ImageBackground>
     );
   }
 
   return (
-    <LinearGradient colors={['#0EA5E9', '#06B6D4', '#67E8F9']} style={styles.gradient}>
+    <ImageBackground
+      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <ScrollView
           style={styles.scrollView}
@@ -146,12 +153,12 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
+  backgroundImage: {
     flex: 1,
   },
   container: {
