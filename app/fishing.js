@@ -577,9 +577,10 @@ export default function FishingScreen() {
           style={[
             styles.hook,
             {
-              left: Animated.subtract(hookX, 20),
-              top: Animated.subtract(hookY, 20),
-              transform: [{ translateY: gamePhase === 'biting' ? hookBounce : 0 }],
+              transform: [
+                { translateX: Animated.subtract(hookX, 20) },
+                { translateY: Animated.add(Animated.subtract(hookY, 20), gamePhase === 'biting' ? hookBounce : 0) },
+              ],
             },
           ]}
         >
@@ -1008,6 +1009,8 @@ const styles = StyleSheet.create({
   },
   hook: {
     position: 'absolute',
+    left: 0,
+    top: 0,
     width: 40,
     height: 40,
     zIndex: 15,
