@@ -898,12 +898,6 @@ export default function FishingScreen() {
       {gamePhase === 'reeling' && (
         <View style={styles.reelingOverlay}>
           <View style={styles.reelingContainer}>
-            <View style={styles.reelingProgressContainer}>
-              <Text style={styles.reelingProgress}>
-                Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
-              </Text>
-            </View>
-
             <View style={styles.circleContainer}>
               <Svg width={200} height={200}>
                 <Defs>
@@ -958,6 +952,12 @@ export default function FishingScreen() {
               >
                 <Text style={styles.reelingButtonText}>PULL!</Text>
               </TouchableOpacity>
+            </View>
+
+            <View style={styles.reelingProgressContainer}>
+              <Text style={styles.reelingProgress}>
+                Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
+              </Text>
             </View>
           </View>
         </View>
@@ -1444,7 +1444,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   reelingProgressContainer: {
-    marginBottom: 15,
+    marginTop: 15,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     paddingHorizontal: 16,
     paddingVertical: 8,
