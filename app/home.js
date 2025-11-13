@@ -73,7 +73,7 @@ export default function HomeScreen() {
         >
           {/* Top decoration */}
           <View style={styles.topDecoration}>
-            <Text style={styles.decorationEmoji}>🎣🐟</Text>
+            <Text style={styles.decorationEmoji}>🎣</Text>
           </View>
 
           {/* Main title */}
