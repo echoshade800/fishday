@@ -147,8 +147,24 @@ export default function FishingScreen() {
       const animateFish = () => {
         const padding = 40;
         const currentX = fish.animX._value;
-        const targetX = padding + Math.random() * (SCREEN_WIDTH - padding * 2);
-        const targetY = SEA_AREA_TOP + padding + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP - padding * 2);
+        const currentY = fish.animY._value;
+
+        let targetX, targetY;
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        do {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 50 + Math.random() * 150;
+
+          targetX = currentX + Math.cos(angle) * distance;
+          targetY = currentY + Math.sin(angle) * distance;
+
+          targetX = Math.max(padding, Math.min(SCREEN_WIDTH - padding, targetX));
+          targetY = Math.max(SEA_AREA_TOP + padding, Math.min(SEA_AREA_BOTTOM - padding, targetY));
+
+          attempts++;
+        } while (Math.abs(targetX - currentX) < 20 && attempts < maxAttempts);
 
         const newDirection = targetX > currentX ? 1 : -1;
         setFishDirections(prev => {
@@ -157,11 +173,11 @@ export default function FishingScreen() {
           return updated;
         });
 
-        const distance = Math.sqrt(
+        const actualDistance = Math.sqrt(
           Math.pow(targetX - currentX, 2) +
-          Math.pow(targetY - fish.animY._value, 2)
+          Math.pow(targetY - currentY, 2)
         );
-        const duration = (distance / fish.speed) * 100;
+        const duration = (actualDistance / fish.speed) * 100;
 
         return Animated.parallel([
           Animated.timing(fish.animX, {
@@ -178,24 +194,18 @@ export default function FishingScreen() {
       };
 
       const loopAnimation = () => {
-        Animated.loop(
-          Animated.sequence([
-            animateFish(),
-            Animated.delay(Math.random() * 500),
-          ])
-        ).start();
+        const animate = () => {
+          animateFish().start(() => {
+            setTimeout(() => {
+              animate();
+            }, Math.random() * 1000 + 500);
+          });
+        };
+        animate();
       };
 
       loopAnimation();
     });
-
-    return () => {
-      animations.forEach((anim) => {
-        if (anim && anim.stop) {
-          anim.stop();
-        }
-      });
-    };
   }, [swimmingFish]);
 
   const panResponder = useRef(
