@@ -850,11 +850,36 @@ export default function FishingScreen() {
                 onPress={() => {
                   setShowFailDialog(false);
                   setMissedCount(0);
+
+                  hookX.stopAnimation(() => {
+                    hookX.setValue(CHARACTER_X + 6);
+                  });
+                  hookY.stopAnimation(() => {
+                    hookY.setValue(CHARACTER_Y);
+                  });
+                  splashScale.stopAnimation(() => {
+                    splashScale.setValue(0);
+                  });
+                  splashOpacity.stopAnimation(() => {
+                    splashOpacity.setValue(0);
+                  });
+                  hookBounce.stopAnimation(() => {
+                    hookBounce.setValue(0);
+                  });
+                  reelGlowScale.stopAnimation(() => {
+                    reelGlowScale.setValue(1);
+                  });
+                  reelGlowOpacity.stopAnimation(() => {
+                    reelGlowOpacity.setValue(0);
+                  });
+                  exclamationScale.stopAnimation(() => {
+                    exclamationScale.setValue(0);
+                  });
+                  exclamationOpacity.stopAnimation(() => {
+                    exclamationOpacity.setValue(0);
+                  });
+
                   setGamePhase('ready');
-                  hookX.setValue(CHARACTER_X + 6);
-                  hookY.setValue(CHARACTER_Y);
-                  splashScale.setValue(0);
-                  splashOpacity.setValue(0);
                 }}
                 activeOpacity={0.8}
               >
