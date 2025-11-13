@@ -9,6 +9,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, 
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
+import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { useGameStore } from '../store/gameStore';
 import { GAME_CONFIG } from '../constants/gameConfig';
 import { getRandomFish } from '../constants/fishData';
@@ -16,6 +17,8 @@ import { getRandomFish } from '../constants/fishData';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
 const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
+const ROD_TIP_X = SCREEN_WIDTH * 0.58;
+const ROD_TIP_Y = SCREEN_HEIGHT * 0.48;
 
 export default function FishingScreen() {
   const router = useRouter();
@@ -31,6 +34,8 @@ export default function FishingScreen() {
   const outerRingScale = useRef(new Animated.Value(0)).current;
   const outerRingOpacity = useRef(new Animated.Value(0)).current;
   const highlightScale = useRef(new Animated.Value(1)).current;
+  const arcGlowAnim = useRef(new Animated.Value(0)).current;
+  const rippleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const pulseAnimation = Animated.loop(
@@ -72,21 +77,41 @@ export default function FishingScreen() {
   }, [isDragging]);
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(highlightScale, {
-          toValue: 1.15,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(highlightScale, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
+    if (isDragging) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(arcGlowAnim, {
+            toValue: 1,
+            duration: 1200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(arcGlowAnim, {
+            toValue: 0,
+            duration: 1200,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(rippleAnim, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rippleAnim, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      arcGlowAnim.setValue(0);
+      rippleAnim.setValue(0);
+    }
+  }, [isDragging]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -141,6 +166,20 @@ export default function FishingScreen() {
     })
   ).current;
 
+  const generateArcPath = () => {
+    const startX = ROD_TIP_X;
+    const startY = ROD_TIP_Y;
+    const endX = castPosition.x;
+    const endY = castPosition.y;
+
+    const midX = (startX + endX) / 2;
+    const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+    const curveHeight = distance * 0.35;
+    const controlY = Math.min(startY, endY) - curveHeight;
+
+    return `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`;
+  };
+
   return (
     <View style={styles.container}>
       {/* Background Image */}
@@ -150,22 +189,97 @@ export default function FishingScreen() {
         resizeMode="cover"
       />
 
+      {/* Glowing Arc Line */}
+      {isDragging && (
+        <Svg
+          style={styles.arcSvg}
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
+        >
+          <Defs>
+            <LinearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <Stop offset="0%" stopColor="#60A5FA" stopOpacity="0.3" />
+              <Stop offset="50%" stopColor="#3B82F6" stopOpacity="0.8" />
+              <Stop offset="100%" stopColor="#2563EB" stopOpacity="0.3" />
+            </LinearGradient>
+          </Defs>
+          <Path
+            d={generateArcPath()}
+            stroke="url(#arcGradient)"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.9}
+          />
+          <Path
+            d={generateArcPath()}
+            stroke="#93C5FD"
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.3}
+          />
+          <Path
+            d={generateArcPath()}
+            stroke="#DBEAFE"
+            strokeWidth="12"
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.15}
+          />
+        </Svg>
+      )}
+
       {/* Cast Position Highlight */}
       {isDragging && (
-        <Animated.View
+        <View
           style={[
             styles.castHighlight,
             {
-              left: castPosition.x - 60,
-              top: castPosition.y - 40,
-              transform: [{ scale: highlightScale }],
+              left: castPosition.x - 70,
+              top: castPosition.y - 70,
             },
           ]}
         >
-          <View style={styles.highlightOuter} />
-          <View style={styles.highlightInner} />
-          <View style={styles.highlightCenter} />
-        </Animated.View>
+          <Animated.View
+            style={[
+              styles.rippleOuter,
+              {
+                transform: [{ scale: rippleAnim }],
+                opacity: rippleAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.6, 0],
+                }),
+              },
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.rippleMiddle,
+              {
+                transform: [
+                  {
+                    scale: rippleAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.8, 1.3],
+                    }),
+                  },
+                ],
+                opacity: rippleAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.5, 0],
+                }),
+              },
+            ]}
+          />
+          <View style={styles.targetCircleOuter} />
+          <View style={styles.targetCircleMiddle} />
+          <View style={styles.targetCircleInner} />
+          <View style={styles.targetCrosshair}>
+            <View style={styles.crosshairH} />
+            <View style={styles.crosshairV} />
+          </View>
+        </View>
       )}
 
       {/* Character Image */}
@@ -239,43 +353,96 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
   },
+  arcSvg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 5,
+  },
   castHighlight: {
     position: 'absolute',
-    width: 120,
-    height: 80,
+    width: 140,
+    height: 140,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
   },
-  highlightOuter: {
+  rippleOuter: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+    borderWidth: 3,
+    borderColor: 'rgba(59, 130, 246, 0.5)',
+  },
+  rippleMiddle: {
     position: 'absolute',
     width: 120,
-    height: 80,
+    height: 120,
     borderRadius: 60,
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    backgroundColor: 'rgba(96, 165, 250, 0.15)',
     borderWidth: 2,
-    borderColor: 'rgba(59, 130, 246, 0.4)',
+    borderColor: 'rgba(96, 165, 250, 0.4)',
   },
-  highlightInner: {
+  targetCircleOuter: {
     position: 'absolute',
-    width: 80,
-    height: 54,
-    borderRadius: 40,
-    backgroundColor: 'rgba(96, 165, 250, 0.3)',
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderWidth: 3,
+    borderColor: 'rgba(59, 130, 246, 0.8)',
+    backgroundColor: 'rgba(59, 130, 246, 0.08)',
+  },
+  targetCircleMiddle: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     borderWidth: 2,
-    borderColor: 'rgba(96, 165, 250, 0.6)',
+    borderColor: 'rgba(96, 165, 250, 0.9)',
+    backgroundColor: 'rgba(96, 165, 250, 0.12)',
   },
-  highlightCenter: {
+  targetCircleInner: {
     position: 'absolute',
-    width: 40,
-    height: 27,
-    borderRadius: 20,
-    backgroundColor: 'rgba(147, 197, 253, 0.5)',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(147, 197, 253, 0.6)',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  targetCrosshair: {
+    position: 'absolute',
+    width: 90,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  crosshairH: {
+    position: 'absolute',
+    width: 24,
+    height: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     shadowColor: '#3B82F6',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowRadius: 4,
+  },
+  crosshairV: {
+    position: 'absolute',
+    width: 2,
+    height: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
   },
   characterImage: {
     position: 'absolute',
