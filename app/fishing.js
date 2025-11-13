@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
@@ -14,17 +14,26 @@ import { GAME_CONFIG } from '../constants/gameConfig';
 import { getRandomFish } from '../constants/fishData';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
+const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
 
 export default function FishingScreen() {
   const router = useRouter();
 
-  // Drag button animation
+  const [isDragging, setIsDragging] = useState(false);
+  const [castPosition, setCastPosition] = useState({
+    x: SCREEN_WIDTH / 2,
+    y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
+  });
+
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
+  const outerRingScale = useRef(new Animated.Value(0)).current;
+  const outerRingOpacity = useRef(new Animated.Value(0)).current;
+  const highlightScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Drag button pulse animation
-    Animated.loop(
+    const pulseAnimation = Animated.loop(
       Animated.sequence([
         Animated.parallel([
           Animated.timing(dragButtonScale, {
@@ -51,12 +60,86 @@ export default function FishingScreen() {
           }),
         ]),
       ])
+    );
+
+    if (!isDragging) {
+      pulseAnimation.start();
+    } else {
+      pulseAnimation.stop();
+    }
+
+    return () => pulseAnimation.stop();
+  }, [isDragging]);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(highlightScale, {
+          toValue: 1.15,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(highlightScale, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
     ).start();
   }, []);
 
-  const handleDragStart = () => {
-    console.log('Drag started');
-  };
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        setIsDragging(true);
+        Animated.parallel([
+          Animated.spring(outerRingScale, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 50,
+            friction: 7,
+          }),
+          Animated.timing(outerRingOpacity, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        const { dx, dy } = gestureState;
+        const sensitivity = 2;
+
+        let newX = SCREEN_WIDTH / 2 + dx * sensitivity;
+        let newY = (SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2) + dy * sensitivity;
+
+        newX = Math.max(60, Math.min(SCREEN_WIDTH - 60, newX));
+        newY = Math.max(SEA_AREA_TOP + 60, Math.min(SEA_AREA_BOTTOM - 60, newY));
+
+        setCastPosition({ x: newX, y: newY });
+      },
+      onPanResponderRelease: () => {
+        setIsDragging(false);
+        Animated.parallel([
+          Animated.spring(outerRingScale, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 50,
+            friction: 7,
+          }),
+          Animated.timing(outerRingOpacity, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start();
+
+        console.log('Cast at position:', castPosition);
+      },
+    })
+  ).current;
 
   return (
     <View style={styles.container}>
@@ -66,6 +149,24 @@ export default function FishingScreen() {
         style={styles.backgroundImage}
         resizeMode="cover"
       />
+
+      {/* Cast Position Highlight */}
+      {isDragging && (
+        <Animated.View
+          style={[
+            styles.castHighlight,
+            {
+              left: castPosition.x - 60,
+              top: castPosition.y - 60,
+              transform: [{ scale: highlightScale }],
+            },
+          ]}
+        >
+          <View style={styles.highlightOuter} />
+          <View style={styles.highlightInner} />
+          <View style={styles.highlightCenter} />
+        </Animated.View>
+      )}
 
       {/* Character Image */}
       <Image
@@ -85,28 +186,45 @@ export default function FishingScreen() {
           </View>
         </TouchableOpacity>
 
+        {/* Top Instruction Text */}
+        <View style={styles.instructionContainer}>
+          <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
+          <Text style={styles.instructionText}>Drag button to cast</Text>
+        </View>
+
         {/* Drag to Cast button */}
         <Animated.View
           style={[
             styles.dragButtonContainer,
             {
               transform: [
-                { scale: dragButtonScale },
-                { translateY: dragButtonY },
+                { scale: isDragging ? 1 : dragButtonScale },
+                { translateY: isDragging ? 0 : dragButtonY },
               ],
             },
           ]}
+          {...panResponder.panHandlers}
         >
-          <TouchableOpacity
-            style={styles.dragButton}
-            onPress={handleDragStart}
-            activeOpacity={0.8}
-          >
+          {/* Outer Ring */}
+          <Animated.View
+            style={[
+              styles.outerRing,
+              {
+                transform: [{ scale: outerRingScale }],
+                opacity: outerRingOpacity,
+              },
+            ]}
+          />
+
+          <View style={styles.dragButton}>
             <FishIcon size={40} color="#FFFFFF" strokeWidth={2.5} />
-          </TouchableOpacity>
-          <View style={styles.dragHint}>
-            <Text style={styles.dragHintText}>Drag to Cast</Text>
           </View>
+
+          {!isDragging && (
+            <View style={styles.dragHint}>
+              <Text style={styles.dragHintText}>Drag to Cast</Text>
+            </View>
+          )}
         </Animated.View>
       </SafeAreaView>
     </View>
@@ -124,6 +242,44 @@ const styles = StyleSheet.create({
     left: 0,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
+  },
+  castHighlight: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  highlightOuter: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    borderWidth: 2,
+    borderColor: 'rgba(59, 130, 246, 0.4)',
+  },
+  highlightInner: {
+    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(96, 165, 250, 0.3)',
+    borderWidth: 2,
+    borderColor: 'rgba(96, 165, 250, 0.6)',
+  },
+  highlightCenter: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(147, 197, 253, 0.5)',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 8,
   },
   characterImage: {
     position: 'absolute',
@@ -154,12 +310,51 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  instructionContainer: {
+    position: 'absolute',
+    top: 60,
+    left: SCREEN_WIDTH / 2 - 100,
+    width: 200,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FBBF24',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 2.5,
+    borderColor: '#F59E0B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 50,
+  },
+  instructionText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#78350F',
+    marginLeft: 6,
+  },
   dragButtonContainer: {
     position: 'absolute',
     bottom: 80,
     right: 40,
     alignItems: 'center',
     zIndex: 100,
+  },
+  outerRing: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderWidth: 3,
+    borderColor: 'rgba(59, 130, 246, 0.4)',
+    borderStyle: 'dashed',
+    top: -30,
+    left: -30,
   },
   dragButton: {
     width: 80,
