@@ -167,7 +167,7 @@ export default function FishingScreen() {
   ).current;
 
   const generateArcPath = () => {
-    const startX = CHARACTER_X;
+    const startX = CHARACTER_X + 6;
     const startY = CHARACTER_Y;
     const endX = castPosition.x;
     const endY = castPosition.y;
