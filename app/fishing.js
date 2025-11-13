@@ -17,8 +17,8 @@ import { getRandomFish } from '../constants/fishData';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
 const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
-const FISHING_ROD_X = SCREEN_WIDTH * 0.56;
-const FISHING_ROD_Y = SCREEN_HEIGHT * 0.50;
+const FISHING_ROD_X = SCREEN_WIDTH * 0.58;
+const FISHING_ROD_Y = SCREEN_HEIGHT * 0.42;
 
 export default function FishingScreen() {
   const router = useRouter();
