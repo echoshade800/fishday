@@ -213,12 +213,18 @@ export default function FishingScreen() {
     });
   }, [swimmingFish]);
 
+  const dragStartPosition = useRef({ x: 0, y: 0 });
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => {
+      onPanResponderGrant: (evt) => {
         setIsDragging(true);
+        dragStartPosition.current = {
+          x: evt.nativeEvent.pageX,
+          y: evt.nativeEvent.pageY,
+        };
         Animated.parallel([
           Animated.spring(outerRingScale, {
             toValue: 1,
@@ -235,10 +241,10 @@ export default function FishingScreen() {
       },
       onPanResponderMove: (evt, gestureState) => {
         const { dx, dy } = gestureState;
-        const sensitivity = 2;
+        const sensitivity = 1.5;
 
-        let newX = SCREEN_WIDTH / 2 + dx * sensitivity;
-        let newY = (SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2) + dy * sensitivity;
+        let newX = dragStartPosition.current.x + dx * sensitivity;
+        let newY = dragStartPosition.current.y + dy * sensitivity;
 
         newX = Math.max(60, Math.min(SCREEN_WIDTH - 60, newX));
         newY = Math.max(SEA_AREA_TOP + 60, Math.min(SEA_AREA_BOTTOM - 60, newY));
