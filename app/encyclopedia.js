@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FISH_DATA } from '../constants/fishData';
@@ -14,6 +14,7 @@ import FishCard from '../components/FishCard';
 
 export default function EncyclopediaScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRarity, setSelectedRarity] = useState('all');
 
@@ -38,7 +39,7 @@ export default function EncyclopediaScreen() {
 
   return (
     <LinearGradient colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']} style={styles.gradient}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <View style={styles.header}>
           <Text style={styles.title}>Fish Encyclopedia</Text>
           <Text style={styles.subtitle}>{filteredFish.length} species</Text>
@@ -86,7 +87,7 @@ export default function EncyclopediaScreen() {
               <FishCard fish={item} onPress={() => handleFishPress(item.id)} />
             )}
             keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 20 }]}
             showsVerticalScrollIndicator={false}
             numColumns={2}
             columnWrapperStyle={styles.row}

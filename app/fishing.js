@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '../store/gameStore';
@@ -26,6 +26,7 @@ const PHASES = {
 
 export default function FishingScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { useTry, addCatch, getRemainingTries } = useGameStore();
 
   const [phase, setPhase] = useState(PHASES.IDLE);
@@ -323,12 +324,12 @@ export default function FishingScreen() {
 
   return (
     <LinearGradient colors={['#0EA5E9', '#06B6D4', '#67E8F9']} style={styles.gradient}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>← Back</Text>
         </TouchableOpacity>
 
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingBottom: insets.bottom + 20 }]}>
           {renderPhaseContent()}
         </View>
       </SafeAreaView>
