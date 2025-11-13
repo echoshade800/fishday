@@ -156,8 +156,10 @@ export const useGameStore = create((set, get) => ({
 
   // Get remaining tries
   getRemainingTries: () => {
-    const { triesUsedToday } = get();
-    return Math.max(0, GAME_CONFIG.DAILY_TRIES_LIMIT - triesUsedToday);
+    // Testing mode: Always return unlimited tries
+    return 999;
+    // const { triesUsedToday } = get();
+    // return Math.max(0, GAME_CONFIG.DAILY_TRIES_LIMIT - triesUsedToday);
   },
 
   // Update settings
