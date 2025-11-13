@@ -9,9 +9,6 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, I
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../store/gameStore';
-import Card from '../components/Card';
-import Button from '../components/Button';
-import { renderStars } from '../constants/fishData';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,8 +17,8 @@ export default function HomeScreen() {
     initialize,
     isLoading,
     getRemainingTries,
-    getRecentCatches,
-    maxScore
+    maxScore,
+    maxLevel
   } = useGameStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -37,7 +34,6 @@ export default function HomeScreen() {
   };
 
   const remainingTries = getRemainingTries();
-  const recentCatches = getRecentCatches();
   const canFish = remainingTries > 0;
 
   const handleStartFishing = () => {
@@ -71,86 +67,79 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 16 }]}
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 80 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.welcomeSection}>
-            <Text style={styles.emoji}>🎣</Text>
-            <Text style={styles.title}>Relax. Cast. Catch.</Text>
-            <Text style={styles.subtitle}>Quick fishing breaks · 3 tries per day</Text>
+          {/* Top decoration */}
+          <View style={styles.topDecoration}>
+            <Text style={styles.decorationEmoji}>🎣🐟</Text>
           </View>
 
-          <View style={styles.statsRow}>
-            <Card style={styles.statCard}>
-              <Text style={styles.statLabel}>Tries Today</Text>
-              <Text style={styles.statValue}>{remainingTries}/3</Text>
-              {!canFish && (
-                <Text style={styles.resetText}>Resets at 00:00</Text>
-              )}
-            </Card>
-            <Card style={styles.statCard}>
-              <Text style={styles.statLabel}>Collected</Text>
-              <Text style={styles.statValue}>{maxScore}/16</Text>
-            </Card>
+          {/* Main title */}
+          <View style={styles.titleSection}>
+            <Text style={styles.mainTitle}>Relax. Cast. Catch.</Text>
+            <Text style={styles.mainSubtitle}>A mini fishing game for quick breaks.</Text>
           </View>
 
-          <Button
-            title={canFish ? 'Start Fishing' : 'Out of Tries'}
+          {/* Feature cards */}
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>🌊</Text>
+            <Text style={styles.featureText}>Peaceful oceanic experience</Text>
+          </View>
+
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>🐠</Text>
+            <Text style={styles.featureText}>Collect 16 unique fish species</Text>
+          </View>
+
+          {/* Main action button */}
+          <TouchableOpacity
+            style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
             onPress={handleStartFishing}
             disabled={!canFish}
-            style={styles.fishButton}
-          />
+            activeOpacity={0.8}
+          >
+            <Text style={styles.mainButtonText}>
+              {canFish ? 'Start Fishing' : 'Out of Tries'}
+            </Text>
+          </TouchableOpacity>
 
-          {recentCatches.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Recent Catches</Text>
-              {recentCatches.slice(0, 2).map((catchItem) => (
-                <TouchableOpacity
-                  key={catchItem.id}
-                  onPress={() => router.push(`/details/${catchItem.fishId}`)}
-                  activeOpacity={0.7}
-                >
-                  <Card style={styles.catchCard}>
-                    <View style={styles.catchInfo}>
-                      <Text style={styles.catchName}>{catchItem.fishName}</Text>
-                      <Text style={styles.catchRarity}>{renderStars(catchItem.rarity)}</Text>
-                    </View>
-                    <Text style={styles.catchTime}>
-                      {new Date(catchItem.timestamp).toLocaleTimeString()}
-                    </Text>
-                  </Card>
-                </TouchableOpacity>
-              ))}
+          {/* Stats row */}
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statLabel}>Tries Today</Text>
+              <Text style={styles.statValue}>{remainingTries}/3</Text>
             </View>
-          )}
-
-          <View style={styles.quickLinks}>
-            <TouchableOpacity
-              style={styles.linkButton}
-              onPress={() => router.push('/encyclopedia')}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.linkIcon}>📚</Text>
-              <Text style={styles.linkText}>Encyclopedia</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.linkButton}
-              onPress={() => router.push('/profile')}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.linkIcon}>👤</Text>
-              <Text style={styles.linkText}>Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.linkButton}
-              onPress={() => router.push('/about')}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.linkIcon}>ℹ️</Text>
-              <Text style={styles.linkText}>About</Text>
-            </TouchableOpacity>
+            <View style={styles.statBox}>
+              <Text style={styles.statLabel}>Best Rarity</Text>
+              <Text style={styles.statValue}>{maxLevel}/5</Text>
+            </View>
           </View>
+
+          {/* Navigation buttons */}
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => router.push('/encyclopedia')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.navButtonIcon}>📚</Text>
+            <Text style={styles.navButtonText}>Encyclopedia</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => router.push('/profile')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.navButtonIcon}>👤</Text>
+            <Text style={styles.navButtonText}>Profile</Text>
+          </TouchableOpacity>
+
+          {/* Footer text */}
+          <Text style={styles.footerText}>
+            Collected: {maxScore}/16 species
+          </Text>
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
@@ -168,7 +157,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
+    padding: 24,
+    alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
@@ -178,105 +168,128 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     color: '#FFFFFF',
+    fontWeight: '600',
   },
-  welcomeSection: {
+  topDecoration: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  decorationEmoji: {
+    fontSize: 60,
+    textAlign: 'center',
+  },
+  titleSection: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 32,
   },
-  emoji: {
-    fontSize: 48,
+  mainTitle: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#1E3A5F',
+    textAlign: 'center',
     marginBottom: 8,
+    letterSpacing: 0.5,
   },
-  title: {
-    fontSize: 24,
+  mainSubtitle: {
+    fontSize: 16,
+    color: '#1E3A5F',
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  featureCard: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+  featureIcon: {
+    fontSize: 28,
+    marginRight: 12,
+  },
+  featureText: {
+    fontSize: 16,
+    color: '#1E3A5F',
+    fontWeight: '500',
+    flex: 1,
+  },
+  mainButton: {
+    width: '100%',
+    backgroundColor: '#0891B2',
+    paddingVertical: 20,
+    borderRadius: 20,
+    marginTop: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  mainButtonDisabled: {
+    backgroundColor: '#94A3B8',
+    opacity: 0.6,
+  },
+  mainButtonText: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#F0F9FF',
-    textAlign: 'center',
+    letterSpacing: 0.5,
   },
   statsRow: {
+    width: '100%',
     flexDirection: 'row',
     gap: 12,
     marginBottom: 16,
   },
-  statCard: {
+  statBox: {
     flex: 1,
+    backgroundColor: 'rgba(186, 230, 253, 0.7)',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderRadius: 16,
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 13,
-    color: '#64748B',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0891B2',
-  },
-  resetText: {
-    fontSize: 11,
-    color: '#EF4444',
-    marginTop: 4,
-  },
-  fishButton: {
-    marginBottom: 16,
-  },
-  section: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
     color: '#FFFFFF',
     marginBottom: 8,
-  },
-  catchCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  catchInfo: {
-    flex: 1,
-  },
-  catchName: {
-    fontSize: 14,
     fontWeight: '600',
-    color: '#0F172A',
-    marginBottom: 2,
   },
-  catchRarity: {
-    fontSize: 12,
-    color: '#FCD34D',
+  statValue: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0C4A6E',
   },
-  catchTime: {
-    fontSize: 11,
-    color: '#94A3B8',
-  },
-  quickLinks: {
+  navButton: {
+    width: '100%',
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  linkButton: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    padding: 10,
-    borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(224, 242, 254, 0.85)',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    marginBottom: 12,
   },
-  linkIcon: {
-    fontSize: 20,
-    marginBottom: 2,
+  navButtonIcon: {
+    fontSize: 24,
+    marginRight: 12,
   },
-  linkText: {
-    fontSize: 11,
+  navButtonText: {
+    fontSize: 18,
+    color: '#1E3A5F',
     fontWeight: '600',
-    color: '#0891B2',
+  },
+  footerText: {
+    fontSize: 13,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginTop: 16,
+    opacity: 0.9,
   },
 });
