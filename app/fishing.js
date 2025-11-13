@@ -47,10 +47,14 @@ export default function FishingScreen() {
   const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showFailDialog, setShowFailDialog] = useState(false);
+  const [missedCount, setMissedCount] = useState(0);
   const [castPosition, setCastPosition] = useState({
     x: SCREEN_WIDTH / 2,
     y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
   });
+
+  const bitingTimeoutRef = useRef(null);
 
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
@@ -281,6 +285,10 @@ export default function FishingScreen() {
         ]),
       ]).start();
     } else {
+      if (bitingTimeoutRef.current) {
+        clearTimeout(bitingTimeoutRef.current);
+        bitingTimeoutRef.current = null;
+      }
       hookBounce.setValue(0);
       reelGlowScale.setValue(1);
       reelGlowOpacity.setValue(0);
@@ -412,6 +420,22 @@ export default function FishingScreen() {
         const randomDelay = 2000 + Math.random() * 3000;
         setTimeout(() => {
           setGamePhase('biting');
+
+          bitingTimeoutRef.current = setTimeout(() => {
+            setMissedCount(prev => {
+              const newCount = prev + 1;
+              if (newCount >= 3) {
+                setShowFailDialog(true);
+                return newCount;
+              }
+              setGamePhase('waiting');
+              const nextRandomDelay = 2000 + Math.random() * 3000;
+              setTimeout(() => {
+                setGamePhase('biting');
+              }, nextRandomDelay);
+              return newCount;
+            });
+          }, 2000);
         }, randomDelay);
       });
     });
@@ -727,7 +751,21 @@ export default function FishingScreen() {
 
         {/* Pull Rod button */}
         {(gamePhase === 'waiting' || gamePhase === 'biting') && (
-          <View style={styles.dragButtonContainer}>
+          <TouchableOpacity
+            style={styles.dragButtonContainer}
+            onPress={() => {
+              if (gamePhase === 'biting') {
+                if (bitingTimeoutRef.current) {
+                  clearTimeout(bitingTimeoutRef.current);
+                  bitingTimeoutRef.current = null;
+                }
+                setMissedCount(0);
+                alert('Caught!');
+              }
+            }}
+            activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
+            disabled={gamePhase !== 'biting'}
+          >
             {gamePhase === 'biting' && (
               <Animated.View
                 style={[
@@ -744,7 +782,7 @@ export default function FishingScreen() {
               style={styles.dragButton}
               resizeMode="contain"
             />
-          </View>
+          </TouchableOpacity>
         )}
       </SafeAreaView>
 
@@ -773,6 +811,45 @@ export default function FishingScreen() {
                 activeOpacity={0.8}
               >
                 <Text style={styles.confirmButtonText}>Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {/* Game Failed Dialog */}
+      {showFailDialog && (
+        <View style={styles.dialogOverlay}>
+          <View style={styles.dialogCard}>
+            <Text style={styles.dialogTitle}>Game Over!</Text>
+            <Text style={styles.dialogMessage}>
+              You missed the fish 3 times. Better luck next time!
+            </Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.cancelButton]}
+                onPress={() => {
+                  setShowFailDialog(false);
+                  router.push('/home');
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.cancelButtonText}>Back to Home</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.confirmButton]}
+                onPress={() => {
+                  setShowFailDialog(false);
+                  setMissedCount(0);
+                  setGamePhase('ready');
+                  hookX.setValue(CHARACTER_X + 6);
+                  hookY.setValue(CHARACTER_Y);
+                  splashScale.setValue(0);
+                  splashOpacity.setValue(0);
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.confirmButtonText}>Restart</Text>
               </TouchableOpacity>
             </View>
           </View>
