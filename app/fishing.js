@@ -43,6 +43,7 @@ const createSwimmingFish = (index) => {
 
 export default function FishingScreen() {
   const router = useRouter();
+  const { addCatch } = useGameStore();
 
   const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
@@ -53,6 +54,12 @@ export default function FishingScreen() {
     x: SCREEN_WIDTH / 2,
     y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
   });
+
+  const [reelingSuccessCount, setReelingSuccessCount] = useState(0);
+  const [reelingFailCount, setReelingFailCount] = useState(0);
+  const [targetZoneStart, setTargetZoneStart] = useState(0);
+  const [targetZoneEnd, setTargetZoneEnd] = useState(60);
+  const [caughtFish, setCaughtFish] = useState(null);
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
@@ -73,6 +80,8 @@ export default function FishingScreen() {
   const reelGlowOpacity = useRef(new Animated.Value(0)).current;
   const exclamationScale = useRef(new Animated.Value(0)).current;
   const exclamationOpacity = useRef(new Animated.Value(0)).current;
+
+  const pointerRotation = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -478,6 +487,74 @@ export default function FishingScreen() {
     return `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`;
   };
 
+  const startReelingGame = () => {
+    setGamePhase('reeling');
+    setReelingSuccessCount(0);
+    setReelingFailCount(0);
+    generateNewTargetZone();
+    startPointerRotation();
+  };
+
+  const generateNewTargetZone = () => {
+    const zoneSize = 40 + Math.random() * 40;
+    const start = Math.random() * (360 - zoneSize);
+    setTargetZoneStart(start);
+    setTargetZoneEnd(start + zoneSize);
+  };
+
+  const startPointerRotation = () => {
+    pointerRotation.setValue(0);
+    Animated.loop(
+      Animated.timing(pointerRotation, {
+        toValue: 360,
+        duration: 2000,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  const handleReelingTap = async () => {
+    const currentRotation = pointerRotation._value % 360;
+    const isInTarget = currentRotation >= targetZoneStart && currentRotation <= targetZoneEnd;
+
+    if (isInTarget) {
+      const newSuccessCount = reelingSuccessCount + 1;
+      setReelingSuccessCount(newSuccessCount);
+
+      if (newSuccessCount >= 3) {
+        const fish = getRandomFish();
+        setCaughtFish(fish);
+        setGamePhase('success');
+        pointerRotation.stopAnimation();
+        await addCatch(fish);
+      } else {
+        generateNewTargetZone();
+      }
+    } else {
+      const newFailCount = reelingFailCount + 1;
+      setReelingFailCount(newFailCount);
+
+      if (newFailCount >= 2) {
+        setGamePhase('fail');
+        pointerRotation.stopAnimation();
+      }
+    }
+  };
+
+  const handleRestart = () => {
+    setGamePhase('ready');
+    setReelingSuccessCount(0);
+    setReelingFailCount(0);
+    setMissedCount(0);
+    setCaughtFish(null);
+    hookX.setValue(CHARACTER_X + 6);
+    hookY.setValue(CHARACTER_Y);
+  };
+
+  const handleHome = () => {
+    router.push('/home');
+  };
+
   return (
     <View style={styles.container}>
       {/* Background Image */}
@@ -770,7 +847,7 @@ export default function FishingScreen() {
                   bitingTimeoutRef.current = null;
                 }
                 setMissedCount(0);
-                alert('Caught!');
+                startReelingGame();
               }
             }}
             activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
@@ -796,6 +873,136 @@ export default function FishingScreen() {
           </TouchableOpacity>
         )}
       </SafeAreaView>
+
+      {/* Reeling Mini-game */}
+      {gamePhase === 'reeling' && (
+        <View style={styles.reelingOverlay}>
+          <View style={styles.reelingContainer}>
+            <Text style={styles.reelingInstruction}>Tap when pointer hits target!</Text>
+
+            <View style={styles.reelingProgressContainer}>
+              <Text style={styles.reelingProgress}>
+                Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
+              </Text>
+            </View>
+
+            <View style={styles.circleContainer}>
+              <Svg width={300} height={300}>
+                <Defs>
+                  <LinearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <Stop offset="0%" stopColor="#3B82F6" stopOpacity="1" />
+                    <Stop offset="100%" stopColor="#1D4ED8" stopOpacity="1" />
+                  </LinearGradient>
+                </Defs>
+
+                {/* Main Circle */}
+                <Path
+                  d="M 150 30 A 120 120 0 1 1 149.99 30"
+                  stroke="url(#circleGradient)"
+                  strokeWidth="20"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+
+                {/* Target Zone (Yellow) */}
+                <Path
+                  d={`M 150 150 L ${150 + 120 * Math.cos((targetZoneStart - 90) * Math.PI / 180)} ${150 + 120 * Math.sin((targetZoneStart - 90) * Math.PI / 180)} A 120 120 0 ${(targetZoneEnd - targetZoneStart) > 180 ? 1 : 0} 1 ${150 + 120 * Math.cos((targetZoneEnd - 90) * Math.PI / 180)} ${150 + 120 * Math.sin((targetZoneEnd - 90) * Math.PI / 180)} Z`}
+                  fill="#FCD34D"
+                  opacity="0.9"
+                />
+              </Svg>
+
+              <Animated.View
+                style={[
+                  styles.pointer,
+                  {
+                    transform: [
+                      { translateX: 150 },
+                      { translateY: 150 },
+                      {
+                        rotate: pointerRotation.interpolate({
+                          inputRange: [0, 360],
+                          outputRange: ['0deg', '360deg'],
+                        }),
+                      },
+                      { translateY: -120 },
+                    ],
+                  },
+                ]}
+              >
+                <View style={styles.pointerTriangle} />
+              </Animated.View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.reelingButton}
+              onPress={handleReelingTap}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.reelingButtonText}>PULL!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Success Dialog */}
+      {gamePhase === 'success' && caughtFish && (
+        <View style={styles.dialogOverlay}>
+          <View style={styles.resultCard}>
+            <Text style={styles.resultTitle}>🎉 Nice Catch!</Text>
+            <Image
+              source={{ uri: caughtFish.imagePlaceholderUrl }}
+              style={styles.resultFishImage}
+              resizeMode="cover"
+            />
+            <Text style={styles.resultFishName}>{caughtFish.name}</Text>
+            <Text style={styles.resultMessage}>Added to your collection!</Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.cancelButton]}
+                onPress={handleRestart}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.cancelButtonText}>Restart</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.confirmButton]}
+                onPress={handleHome}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.confirmButtonText}>Home</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {/* Fail Dialog */}
+      {gamePhase === 'fail' && (
+        <View style={styles.dialogOverlay}>
+          <View style={styles.resultCard}>
+            <Text style={styles.resultTitle}>😢 Oops!</Text>
+            <Text style={styles.resultMessage}>The fish got away!</Text>
+            <Text style={styles.resultSubMessage}>Try again to improve your timing</Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.cancelButton]}
+                onPress={handleRestart}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.cancelButtonText}>Restart</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.confirmButton]}
+                onPress={handleHome}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.confirmButtonText}>Home</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
 
       {/* Exit Confirmation Dialog */}
       {showExitDialog && (
@@ -1201,5 +1408,133 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  reelingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2000,
+  },
+  reelingContainer: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  reelingInstruction: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  reelingProgressContainer: {
+    marginBottom: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  reelingProgress: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  circleContainer: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  pointer: {
+    position: 'absolute',
+    width: 0,
+    height: 0,
+    zIndex: 10,
+  },
+  pointerTriangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 15,
+    borderRightWidth: 15,
+    borderBottomWidth: 30,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#EF4444',
+    marginLeft: -15,
+  },
+  reelingButton: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 60,
+    paddingVertical: 20,
+    borderRadius: 50,
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  reelingButtonText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 2,
+  },
+  resultCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    width: SCREEN_WIDTH * 0.85,
+    maxWidth: 360,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  resultTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  resultFishImage: {
+    width: 180,
+    height: 180,
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  resultFishName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#0891B2',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  resultMessage: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#475569',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  resultSubMessage: {
+    fontSize: 16,
+    color: '#64748B',
+    marginBottom: 24,
+    textAlign: 'center',
   },
 });
