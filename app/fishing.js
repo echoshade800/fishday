@@ -450,6 +450,7 @@ const styles = StyleSheet.create({
     left: SCREEN_WIDTH * 0.35,
     width: SCREEN_WIDTH * 0.3,
     height: SCREEN_HEIGHT * 0.4,
+    zIndex: 10,
   },
   safeArea: {
     flex: 1,
