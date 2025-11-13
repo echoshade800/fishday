@@ -570,6 +570,7 @@ export default function FishingScreen() {
           style={styles.arcSvg}
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
+          pointerEvents="none"
         >
           <Defs>
             <LinearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -615,6 +616,7 @@ export default function FishingScreen() {
               top: castPosition.y - 70,
             },
           ]}
+          pointerEvents="none"
         >
           <Animated.View
             style={[
@@ -663,6 +665,7 @@ export default function FishingScreen() {
           style={styles.arcSvg}
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
+          pointerEvents="none"
         >
           <Defs>
             <LinearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -693,6 +696,7 @@ export default function FishingScreen() {
               ],
             },
           ]}
+          pointerEvents="none"
         >
           <Image
             source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/hook.png' }}
@@ -714,6 +718,7 @@ export default function FishingScreen() {
               opacity: splashOpacity,
             },
           ]}
+          pointerEvents="none"
         >
           <View style={styles.splashRing1} />
           <View style={styles.splashRing2} />
@@ -739,6 +744,7 @@ export default function FishingScreen() {
             },
           ]}
           resizeMode="contain"
+          pointerEvents="none"
         />
       ))}
 
@@ -747,6 +753,7 @@ export default function FishingScreen() {
         source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishpeople1.png' }}
         style={styles.characterImage}
         resizeMode="contain"
+        pointerEvents="none"
       />
 
       {/* Exclamation Mark */}
@@ -765,6 +772,7 @@ export default function FishingScreen() {
             },
           ]}
           resizeMode="contain"
+          pointerEvents="none"
         />
       )}
 
@@ -783,21 +791,21 @@ export default function FishingScreen() {
 
         {/* Top Instruction Text */}
         {gamePhase === 'ready' && (
-          <View style={styles.instructionContainer}>
+          <View style={styles.instructionContainer} pointerEvents="none">
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
             <Text style={styles.instructionText}>Drag button to cast</Text>
           </View>
         )}
 
         {gamePhase === 'waiting' && (
-          <View style={styles.instructionContainer}>
+          <View style={styles.instructionContainer} pointerEvents="none">
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
             <Text style={styles.instructionText}>Waiting for fish...</Text>
           </View>
         )}
 
         {gamePhase === 'biting' && (
-          <View style={styles.instructionContainer}>
+          <View style={styles.instructionContainer} pointerEvents="none">
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
             <Text style={styles.instructionText}>Tap to reel in!</Text>
           </View>
@@ -841,7 +849,9 @@ export default function FishingScreen() {
           <TouchableOpacity
             style={styles.dragButtonContainer}
             onPress={() => {
+              console.log('Button pressed, gamePhase:', gamePhase);
               if (gamePhase === 'biting') {
+                console.log('Starting reeling game...');
                 if (bitingTimeoutRef.current) {
                   clearTimeout(bitingTimeoutRef.current);
                   bitingTimeoutRef.current = null;
@@ -850,9 +860,8 @@ export default function FishingScreen() {
                 startReelingGame();
               }
             }}
-            activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
-            disabled={gamePhase !== 'biting'}
-            pointerEvents={gamePhase === 'biting' ? 'auto' : 'none'}
+            activeOpacity={0.7}
+            disabled={false}
           >
             {gamePhase === 'biting' && (
               <Animated.View
