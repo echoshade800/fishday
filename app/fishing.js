@@ -5,15 +5,18 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
 import { useGameStore } from '../store/gameStore';
 import { GAME_CONFIG } from '../constants/gameConfig';
 import { getRandomFish } from '../constants/fishData';
 import Button from '../components/Button';
 import Card from '../components/Card';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const PHASES = {
   IDLE: 'idle',
@@ -22,6 +25,60 @@ const PHASES = {
   BITING: 'biting',
   HOOKING: 'hooking',
   RESULT: 'result',
+};
+
+// Fish swimming animation component
+const SwimmingFish = ({ delay = 0 }) => {
+  const position = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const randomY = Math.random() * 100 - 50;
+    const duration = 8000 + Math.random() * 4000;
+
+    Animated.sequence([
+      Animated.delay(delay),
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0.6,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(position, {
+          toValue: 1,
+          duration: duration,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      position.setValue(0);
+      opacity.setValue(0);
+    });
+  }, []);
+
+  const translateX = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, SCREEN_WIDTH + 50],
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.fish,
+        {
+          transform: [{ translateX }],
+          opacity,
+        },
+      ]}
+    >
+      <FishIcon size={20 + Math.random() * 15} color="#38BDF8" />
+    </Animated.View>
+  );
 };
 
 export default function FishingScreen() {
@@ -44,9 +101,63 @@ export default function FishingScreen() {
   const hookTimer = useRef(null);
   const rotationInterval = useRef(null);
 
+  // Water wave animation
+  const waveAnim1 = useRef(new Animated.Value(0)).current;
+  const waveAnim2 = useRef(new Animated.Value(0)).current;
+
+  // Drag button animation
+  const dragButtonScale = useRef(new Animated.Value(1)).current;
+  const dragButtonY = useRef(new Animated.Value(0)).current;
+
   const remainingTries = getRemainingTries();
 
   useEffect(() => {
+    // Start water wave animation
+    Animated.loop(
+      Animated.parallel([
+        Animated.timing(waveAnim1, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(waveAnim2, {
+          toValue: 1,
+          duration: 4000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    // Drag button pulse animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(dragButtonScale, {
+            toValue: 1.1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dragButtonY, {
+            toValue: -5,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(dragButtonScale, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dragButtonY, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    ).start();
+
     return () => {
       clearTimers();
     };
@@ -322,35 +433,303 @@ export default function FishingScreen() {
     }
   };
 
+  const waveTranslate1 = waveAnim1.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -100],
+  });
+
+  const waveTranslate2 = waveAnim2.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -150],
+  });
+
   return (
-    <LinearGradient colors={['#0EA5E9', '#06B6D4', '#67E8F9']} style={styles.gradient}>
+    <View style={styles.gradient}>
+      {/* Sky Background */}
+      <LinearGradient
+        colors={['#87CEEB', '#B0E2FF', '#E0F6FF']}
+        style={styles.skyGradient}
+      />
+
+      {/* Clouds */}
+      <View style={styles.cloudContainer}>
+        <View style={[styles.cloud, { top: 60, left: 50 }]} />
+        <View style={[styles.cloud, { top: 100, right: 80 }]} />
+        <View style={[styles.cloud, { top: 150, left: 150 }]} />
+      </View>
+
+      {/* Ocean with waves */}
+      <View style={styles.oceanContainer}>
+        <LinearGradient
+          colors={['#0EA5E9', '#06B6D4', '#38BDF8']}
+          style={styles.oceanGradient}
+        />
+
+        {/* Animated water waves */}
+        <Animated.View
+          style={[
+            styles.wave,
+            { transform: [{ translateY: waveTranslate1 }] },
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.wave,
+            styles.wave2,
+            { transform: [{ translateY: waveTranslate2 }] },
+          ]}
+        />
+
+        {/* Swimming fish */}
+        {[...Array(5)].map((_, index) => (
+          <SwimmingFish key={index} delay={index * 1500} />
+        ))}
+      </View>
+
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>← Back</Text>
+        {/* Back button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <View style={styles.backButtonCircle}>
+            <ArrowLeft size={24} color="#334155" />
+          </View>
         </TouchableOpacity>
 
-        <View style={[styles.content, { paddingBottom: insets.bottom + 20 }]}>
-          {renderPhaseContent()}
+        {/* Wooden dock */}
+        <View style={styles.dockContainer}>
+          <View style={styles.dock}>
+            {/* Dock planks */}
+            {[...Array(8)].map((_, index) => (
+              <View key={index} style={styles.plank} />
+            ))}
+
+            {/* Orange IP character placeholder */}
+            <View style={styles.characterContainer}>
+              <View style={styles.character}>
+                <Text style={styles.characterText}>🎣</Text>
+              </View>
+            </View>
+          </View>
         </View>
+
+        {/* Drag button */}
+        <Animated.View
+          style={[
+            styles.dragButtonContainer,
+            {
+              transform: [
+                { scale: dragButtonScale },
+                { translateY: dragButtonY },
+              ],
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.dragButton}
+            onPress={startCasting}
+            activeOpacity={0.8}
+          >
+            <FishIcon size={40} color="#FFFFFF" strokeWidth={2.5} />
+          </TouchableOpacity>
+          <View style={styles.dragHint}>
+            <Text style={styles.dragHintText}>Drag to Cast</Text>
+          </View>
+        </Animated.View>
+
+        {/* Game phase overlay */}
+        {phase !== PHASES.IDLE && (
+          <View style={styles.phaseOverlay}>
+            <View style={styles.phaseCard}>
+              {renderPhaseContent()}
+            </View>
+          </View>
+        )}
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+    backgroundColor: '#87CEEB',
+  },
+  skyGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * 0.45,
+  },
+  cloudContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * 0.45,
+  },
+  cloud: {
+    position: 'absolute',
+    width: 80,
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 20,
+  },
+  oceanContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * 0.6,
+    overflow: 'hidden',
+  },
+  oceanGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  wave: {
+    position: 'absolute',
+    top: 0,
+    left: -50,
+    right: -50,
+    height: 200,
+    backgroundColor: 'rgba(56, 189, 248, 0.3)',
+    borderRadius: 100,
+  },
+  wave2: {
+    backgroundColor: 'rgba(14, 165, 233, 0.2)',
+    height: 250,
+  },
+  fish: {
+    position: 'absolute',
+    top: '50%',
   },
   container: {
     flex: 1,
   },
   backButton: {
-    padding: 20,
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 100,
   },
-  backButtonText: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    fontWeight: '600',
+  backButtonCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  dockContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * 0.4,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  dock: {
+    width: '90%',
+    height: 220,
+    backgroundColor: '#B8860B',
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: '#8B6914',
+    padding: 10,
+    marginBottom: 40,
+  },
+  plank: {
+    width: '100%',
+    height: 20,
+    backgroundColor: '#CD853F',
+    borderRadius: 2,
+    marginBottom: 4,
+    borderBottomWidth: 2,
+    borderBottomColor: '#8B6914',
+  },
+  characterContainer: {
+    position: 'absolute',
+    top: -80,
+    left: '35%',
+    alignItems: 'center',
+  },
+  character: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FF8C00',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FF6347',
+  },
+  characterText: {
+    fontSize: 40,
+  },
+  dragButtonContainer: {
+    position: 'absolute',
+    bottom: 80,
+    right: 40,
+    alignItems: 'center',
+  },
+  dragButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#3B82F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+    borderWidth: 3,
+    borderColor: '#2563EB',
+  },
+  dragHint: {
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#FBBF24',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#F59E0B',
+  },
+  dragHintText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#78350F',
+  },
+  phaseOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 50,
+  },
+  phaseCard: {
+    width: '85%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
   },
   content: {
     flex: 1,
