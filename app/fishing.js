@@ -757,7 +757,7 @@ export default function FishingScreen() {
       />
 
       {/* Exclamation Mark */}
-      {gamePhase === 'biting' && (
+      {(gamePhase === 'biting') && (
         <Animated.Image
           source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/Exclamationmark.png' }}
           style={[
@@ -808,6 +808,13 @@ export default function FishingScreen() {
           <View style={styles.instructionContainer} pointerEvents="none">
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
             <Text style={styles.instructionText}>Tap to reel in!</Text>
+          </View>
+        )}
+
+        {gamePhase === 'reeling' && (
+          <View style={styles.instructionContainer} pointerEvents="none">
+            <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
+            <Text style={styles.instructionText}>Tap when pointer hits target!</Text>
           </View>
         )}
 
@@ -891,8 +898,6 @@ export default function FishingScreen() {
       {gamePhase === 'reeling' && (
         <View style={styles.reelingOverlay}>
           <View style={styles.reelingContainer}>
-            <Text style={styles.reelingInstruction}>Tap when pointer hits target!</Text>
-
             <View style={styles.reelingProgressContainer}>
               <Text style={styles.reelingProgress}>
                 Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
@@ -1428,28 +1433,17 @@ const styles = StyleSheet.create({
   },
   reelingOverlay: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     zIndex: 2000,
   },
   reelingContainer: {
     alignItems: 'center',
-    padding: 20,
-  },
-  reelingInstruction: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 20,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
   },
   reelingProgressContainer: {
     marginBottom: 30,
