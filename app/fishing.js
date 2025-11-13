@@ -648,7 +648,7 @@ export default function FishingScreen() {
             {
               transform: [
                 { scale: exclamationScale },
-                { rotate: '30deg' },
+                { rotate: '15deg' },
                 { translateY: hookBounce },
               ],
               opacity: exclamationOpacity,
