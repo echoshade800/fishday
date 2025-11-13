@@ -890,11 +890,12 @@ const styles = StyleSheet.create({
   },
   exclamationMark: {
     position: 'absolute',
-    bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.4,
-    left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 30,
-    width: 60,
-    height: 60,
+    bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.32,
+    left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 40,
+    width: 80,
+    height: 80,
     zIndex: 11,
+    transform: [{ rotate: '30deg' }],
   },
   safeArea: {
     flex: 1,
