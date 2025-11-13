@@ -484,10 +484,8 @@ export default function FishingScreen() {
           style={[
             styles.hook,
             {
-              transform: [
-                { translateX: Animated.subtract(hookX, 10) },
-                { translateY: Animated.subtract(hookY, 10) },
-              ],
+              left: Animated.subtract(hookX, 10),
+              top: Animated.subtract(hookY, 10),
             },
           ]}
         >
