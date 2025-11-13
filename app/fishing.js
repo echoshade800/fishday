@@ -484,17 +484,9 @@ export default function FishingScreen() {
           style={[
             styles.hook,
             {
-              left: hookX.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
-              top: hookY.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
               transform: [
-                { translateX: -10 },
-                { translateY: -10 },
+                { translateX: Animated.subtract(hookX, 10) },
+                { translateY: Animated.subtract(hookY, 10) },
               ],
             },
           ]}
