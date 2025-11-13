@@ -22,8 +22,7 @@ export default function HomeScreen() {
     isLoading,
     getRemainingTries,
     getRecentCatches,
-    maxScore,
-    maxLevel
+    maxScore
   } = useGameStore();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -75,13 +74,19 @@ export default function HomeScreen() {
             <Text style={styles.subtitle}>Quick fishing breaks · 3 tries per day</Text>
           </View>
 
-          <Card style={styles.triesCard}>
-            <Text style={styles.triesLabel}>Tries Today</Text>
-            <Text style={styles.triesValue}>{remainingTries}/3</Text>
-            {!canFish && (
-              <Text style={styles.resetText}>Resets at 00:00</Text>
-            )}
-          </Card>
+          <View style={styles.statsRow}>
+            <Card style={styles.statCard}>
+              <Text style={styles.statLabel}>Tries Today</Text>
+              <Text style={styles.statValue}>{remainingTries}/3</Text>
+              {!canFish && (
+                <Text style={styles.resetText}>Resets at 00:00</Text>
+              )}
+            </Card>
+            <Card style={styles.statCard}>
+              <Text style={styles.statLabel}>Collected</Text>
+              <Text style={styles.statValue}>{maxScore}/16</Text>
+            </Card>
+          </View>
 
           <Button
             title={canFish ? 'Start Fishing' : 'Out of Tries'}
@@ -89,17 +94,6 @@ export default function HomeScreen() {
             disabled={!canFish}
             style={styles.fishButton}
           />
-
-          <View style={styles.statsRow}>
-            <Card style={styles.statCard}>
-              <Text style={styles.statLabel}>Collected</Text>
-              <Text style={styles.statValue}>{maxScore}/16</Text>
-            </Card>
-            <Card style={styles.statCard}>
-              <Text style={styles.statLabel}>Best Rarity</Text>
-              <Text style={styles.statValue}>{maxLevel > 0 ? renderStars(maxLevel) : '-'}</Text>
-            </Card>
-          </View>
 
           {recentCatches.length > 0 && (
             <View style={styles.section}>
@@ -198,28 +192,6 @@ const styles = StyleSheet.create({
     color: '#F0F9FF',
     textAlign: 'center',
   },
-  triesCard: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  triesLabel: {
-    fontSize: 14,
-    color: '#64748B',
-    marginBottom: 4,
-  },
-  triesValue: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#0891B2',
-  },
-  resetText: {
-    fontSize: 12,
-    color: '#EF4444',
-    marginTop: 4,
-  },
-  fishButton: {
-    marginBottom: 16,
-  },
   statsRow: {
     flexDirection: 'row',
     gap: 12,
@@ -235,9 +207,17 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#0891B2',
+  },
+  resetText: {
+    fontSize: 11,
+    color: '#EF4444',
+    marginTop: 4,
+  },
+  fishButton: {
+    marginBottom: 16,
   },
   section: {
     marginBottom: 16,
