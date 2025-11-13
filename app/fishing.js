@@ -252,7 +252,19 @@ export default function FishingScreen() {
 
         setCastPosition({ x: newX, y: newY });
       },
-      onPanResponderRelease: () => {
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dx, dy } = gestureState;
+        const sensitivity = 2;
+
+        const centerX = SCREEN_WIDTH / 2;
+        const centerY = SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2;
+
+        let finalX = centerX + dx * sensitivity;
+        let finalY = centerY + dy * sensitivity;
+
+        finalX = Math.max(60, Math.min(SCREEN_WIDTH - 60, finalX));
+        finalY = Math.max(SEA_AREA_TOP + 60, Math.min(SEA_AREA_BOTTOM - 60, finalY));
+
         setIsDragging(false);
         Animated.parallel([
           Animated.spring(outerRingScale, {
@@ -268,18 +280,18 @@ export default function FishingScreen() {
           }),
         ]).start();
 
-        performCast();
+        performCast(finalX, finalY);
       },
     })
   ).current;
 
-  const performCast = () => {
+  const performCast = (targetX, targetY) => {
     setGamePhase('casting');
 
     const startX = CHARACTER_X + 6;
     const startY = CHARACTER_Y;
-    const endX = castPosition.x;
-    const endY = castPosition.y;
+    const endX = targetX;
+    const endY = targetY;
 
     Animated.parallel([
       Animated.timing(hookX, {
