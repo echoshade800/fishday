@@ -288,7 +288,8 @@ export default function FishingScreen() {
     setPhase(PHASES.RESULT);
     setGameMessage(message);
 
-    await useTry();
+    // Testing mode: Don't consume tries
+    // await useTry();
 
     if (success) {
       const fish = getRandomFish();
@@ -300,11 +301,13 @@ export default function FishingScreen() {
   };
 
   const handleFishAgain = () => {
-    if (getRemainingTries() > 0) {
-      resetFishing();
-    } else {
-      router.back();
-    }
+    // Testing mode: Always allow fishing again
+    resetFishing();
+    // if (getRemainingTries() > 0) {
+    //   resetFishing();
+    // } else {
+    //   router.back();
+    // }
   };
 
   const resetFishing = () => {
@@ -326,7 +329,7 @@ export default function FishingScreen() {
         return (
           <View style={styles.phaseContainer}>
             <Text style={styles.phaseTitle}>Ready to Fish?</Text>
-            <Text style={styles.phaseText}>Tries remaining: {remainingTries}/3</Text>
+            <Text style={styles.phaseText}>Testing Mode - Unlimited Tries</Text>
             <Button title="Cast Line" onPress={startCasting} style={styles.actionButton} />
           </View>
         );
@@ -411,14 +414,10 @@ export default function FishingScreen() {
               )}
             </Card>
             <Button
-              title={getRemainingTries() > 0 ? 'Fish Again' : 'Out of Tries'}
+              title="Fish Again"
               onPress={handleFishAgain}
-              disabled={getRemainingTries() === 0}
               style={styles.actionButton}
             />
-            {getRemainingTries() === 0 && (
-              <Text style={styles.resetText}>Resets at 00:00</Text>
-            )}
             <Button
               title="Back to Home"
               onPress={() => router.back()}
