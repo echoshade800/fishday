@@ -46,6 +46,7 @@ export default function FishingScreen() {
 
   const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   const [castPosition, setCastPosition] = useState({
     x: SCREEN_WIDTH / 2,
     y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
@@ -556,7 +557,7 @@ export default function FishingScreen() {
         {/* Back button */}
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => setShowExitDialog(true)}
           activeOpacity={0.7}
         >
           <View style={styles.backButtonCircle}>
@@ -623,6 +624,37 @@ export default function FishingScreen() {
           </View>
         )}
       </SafeAreaView>
+
+      {/* Exit Confirmation Dialog */}
+      {showExitDialog && (
+        <View style={styles.dialogOverlay}>
+          <View style={styles.dialogCard}>
+            <Text style={styles.dialogTitle}>Leave Game?</Text>
+            <Text style={styles.dialogMessage}>
+              Are you sure you want to leave the fishing session?
+            </Text>
+            <View style={styles.dialogButtons}>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.cancelButton]}
+                onPress={() => setShowExitDialog(false)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dialogButton, styles.confirmButton]}
+                onPress={() => {
+                  setShowExitDialog(false);
+                  router.push('/home');
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.confirmButtonText}>Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -882,5 +914,71 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.5)',
     backgroundColor: 'rgba(147, 197, 253, 0.15)',
+  },
+  dialogOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+  },
+  dialogCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+    width: SCREEN_WIDTH * 0.8,
+    maxWidth: 340,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  dialogTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  dialogMessage: {
+    fontSize: 16,
+    color: '#64748B',
+    marginBottom: 24,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  dialogButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  dialogButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  confirmButton: {
+    backgroundColor: '#EF4444',
+  },
+  confirmButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
