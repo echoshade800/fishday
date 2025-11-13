@@ -61,15 +61,19 @@ export default function HomeScreen() {
   }
 
   return (
-    <LinearGradient colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']} style={styles.gradient}>
+    <LinearGradient colors={['#0EA5E9', '#06B6D4', '#67E8F9']} style={styles.gradient}>
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 20 }]}
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 16 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.header}>🎣 FishyDay</Text>
+          <View style={styles.welcomeSection}>
+            <Text style={styles.emoji}>🎣</Text>
+            <Text style={styles.title}>Relax. Cast. Catch.</Text>
+            <Text style={styles.subtitle}>Quick fishing breaks · 3 tries per day</Text>
+          </View>
 
           <Card style={styles.triesCard}>
             <Text style={styles.triesLabel}>Tries Today</Text>
@@ -97,14 +101,10 @@ export default function HomeScreen() {
             </Card>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recent Catches</Text>
-            {recentCatches.length === 0 ? (
-              <Card>
-                <Text style={styles.emptyText}>No catches yet. Try your luck!</Text>
-              </Card>
-            ) : (
-              recentCatches.map((catchItem) => (
+          {recentCatches.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Recent Catches</Text>
+              {recentCatches.slice(0, 2).map((catchItem) => (
                 <TouchableOpacity
                   key={catchItem.id}
                   onPress={() => router.push(`/details/${catchItem.fishId}`)}
@@ -120,9 +120,9 @@ export default function HomeScreen() {
                     </Text>
                   </Card>
                 </TouchableOpacity>
-              ))
-            )}
-          </View>
+              ))}
+            </View>
+          )}
 
           <View style={styles.quickLinks}>
             <TouchableOpacity
@@ -130,21 +130,24 @@ export default function HomeScreen() {
               onPress={() => router.push('/encyclopedia')}
               activeOpacity={0.7}
             >
-              <Text style={styles.linkText}>📚 Encyclopedia</Text>
+              <Text style={styles.linkIcon}>📚</Text>
+              <Text style={styles.linkText}>Encyclopedia</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.linkButton}
               onPress={() => router.push('/profile')}
               activeOpacity={0.7}
             >
-              <Text style={styles.linkText}>👤 Profile</Text>
+              <Text style={styles.linkIcon}>👤</Text>
+              <Text style={styles.linkText}>Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.linkButton}
               onPress={() => router.push('/about')}
               activeOpacity={0.7}
             >
-              <Text style={styles.linkText}>ℹ️ About & Help</Text>
+              <Text style={styles.linkIcon}>ℹ️</Text>
+              <Text style={styles.linkText}>About</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -173,105 +176,119 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 18,
-    color: '#0891B2',
+    color: '#FFFFFF',
   },
-  header: {
-    fontSize: 28,
+  welcomeSection: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  emoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#0F172A',
-    marginBottom: 20,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#F0F9FF',
     textAlign: 'center',
   },
   triesCard: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   triesLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#64748B',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   triesValue: {
-    fontSize: 48,
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#0891B2',
   },
   resetText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#EF4444',
-    marginTop: 8,
+    marginTop: 4,
   },
   fishButton: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   statsRow: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   statCard: {
     flex: 1,
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#64748B',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   statValue: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#0891B2',
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#0F172A',
-    marginBottom: 12,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: '#64748B',
-    textAlign: 'center',
-    fontStyle: 'italic',
+    color: '#FFFFFF',
+    marginBottom: 8,
   },
   catchCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   catchInfo: {
     flex: 1,
   },
   catchName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#0F172A',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   catchRarity: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#FCD34D',
   },
   catchTime: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#94A3B8',
   },
   quickLinks: {
+    flexDirection: 'row',
     gap: 8,
+    marginTop: 8,
   },
   linkButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 16,
-    borderRadius: 12,
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 10,
+    borderRadius: 10,
     alignItems: 'center',
   },
+  linkIcon: {
+    fontSize: 20,
+    marginBottom: 2,
+  },
   linkText: {
-    fontSize: 16,
+    fontSize: 11,
     fontWeight: '600',
     color: '#0891B2',
   },
