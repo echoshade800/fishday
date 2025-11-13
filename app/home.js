@@ -45,7 +45,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <ImageBackground
-        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
+        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -60,7 +60,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
+      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
@@ -78,8 +78,8 @@ export default function HomeScreen() {
 
           {/* Main title */}
           <View style={styles.titleSection}>
-            <Text style={styles.mainTitle}>FishyDay</Text>
-            <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
+            <Text style={styles.mainTitle}>Relax. Cast. Catch.</Text>
+            <Text style={styles.mainSubtitle}>A mini fishing game for quick breaks.</Text>
           </View>
 
           {/* Feature cards */}
