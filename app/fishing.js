@@ -848,44 +848,7 @@ export default function FishingScreen() {
               <TouchableOpacity
                 style={[styles.dialogButton, styles.confirmButton]}
                 onPress={() => {
-                  setShowFailDialog(false);
-                  setMissedCount(0);
-                  setIsDragging(false);
-
-                  if (bitingTimeoutRef.current) {
-                    clearTimeout(bitingTimeoutRef.current);
-                    bitingTimeoutRef.current = null;
-                  }
-                  if (waitingTimeoutRef.current) {
-                    clearTimeout(waitingTimeoutRef.current);
-                    waitingTimeoutRef.current = null;
-                  }
-
-                  Animated.parallel([
-                    Animated.timing(hookX, { toValue: CHARACTER_X + 6, duration: 0, useNativeDriver: false }),
-                    Animated.timing(hookY, { toValue: CHARACTER_Y, duration: 0, useNativeDriver: false }),
-                    Animated.timing(splashScale, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(splashOpacity, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(hookBounce, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(reelGlowScale, { toValue: 1, duration: 0, useNativeDriver: true }),
-                    Animated.timing(reelGlowOpacity, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(exclamationScale, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(exclamationOpacity, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(dragButtonScale, { toValue: 1, duration: 0, useNativeDriver: true }),
-                    Animated.timing(dragButtonY, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(outerRingScale, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(outerRingOpacity, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(highlightScale, { toValue: 1, duration: 0, useNativeDriver: true }),
-                    Animated.timing(arcGlowAnim, { toValue: 0, duration: 0, useNativeDriver: true }),
-                    Animated.timing(rippleAnim, { toValue: 0, duration: 0, useNativeDriver: true }),
-                  ]).start();
-
-                  setCastPosition({
-                    x: SCREEN_WIDTH / 2,
-                    y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
-                  });
-
-                  setGamePhase('ready');
+                  router.replace('/fishing');
                 }}
                 activeOpacity={0.8}
               >
