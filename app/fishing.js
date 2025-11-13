@@ -285,12 +285,12 @@ export default function FishingScreen() {
       Animated.timing(hookX, {
         toValue: endX,
         duration: 800,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(hookY, {
         toValue: endY,
         duration: 800,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       Animated.sequence([
