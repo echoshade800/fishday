@@ -691,12 +691,13 @@ export default function FishingScreen() {
         />
       )}
 
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
         {/* Back button */}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => setShowExitDialog(true)}
           activeOpacity={0.7}
+          pointerEvents="auto"
         >
           <View style={styles.backButtonCircle}>
             <ArrowLeft size={24} color="#334155" />
@@ -774,6 +775,7 @@ export default function FishingScreen() {
             }}
             activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
             disabled={gamePhase !== 'biting'}
+            pointerEvents={gamePhase === 'biting' ? 'auto' : 'none'}
           >
             {gamePhase === 'biting' && (
               <Animated.View
