@@ -850,6 +850,16 @@ export default function FishingScreen() {
                 onPress={() => {
                   setShowFailDialog(false);
                   setMissedCount(0);
+                  setIsDragging(false);
+
+                  if (bitingTimeoutRef.current) {
+                    clearTimeout(bitingTimeoutRef.current);
+                    bitingTimeoutRef.current = null;
+                  }
+                  if (waitingTimeoutRef.current) {
+                    clearTimeout(waitingTimeoutRef.current);
+                    waitingTimeoutRef.current = null;
+                  }
 
                   hookX.stopAnimation(() => {
                     hookX.setValue(CHARACTER_X + 6);
@@ -877,6 +887,32 @@ export default function FishingScreen() {
                   });
                   exclamationOpacity.stopAnimation(() => {
                     exclamationOpacity.setValue(0);
+                  });
+                  dragButtonScale.stopAnimation(() => {
+                    dragButtonScale.setValue(1);
+                  });
+                  dragButtonY.stopAnimation(() => {
+                    dragButtonY.setValue(0);
+                  });
+                  outerRingScale.stopAnimation(() => {
+                    outerRingScale.setValue(0);
+                  });
+                  outerRingOpacity.stopAnimation(() => {
+                    outerRingOpacity.setValue(0);
+                  });
+                  highlightScale.stopAnimation(() => {
+                    highlightScale.setValue(1);
+                  });
+                  arcGlowAnim.stopAnimation(() => {
+                    arcGlowAnim.setValue(0);
+                  });
+                  rippleAnim.stopAnimation(() => {
+                    rippleAnim.setValue(0);
+                  });
+
+                  setCastPosition({
+                    x: SCREEN_WIDTH / 2,
+                    y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
                   });
 
                   setGamePhase('ready');
