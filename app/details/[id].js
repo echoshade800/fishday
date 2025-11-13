@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 20,
     paddingBottom: 12,
+    zIndex: 100,
   },
   backButtonText: {
     fontSize: 16,
