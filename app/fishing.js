@@ -580,7 +580,7 @@ export default function FishingScreen() {
         {gamePhase === 'waiting' && (
           <View style={styles.instructionContainer}>
             <FishIcon size={24} color="#78350F" strokeWidth={2.5} />
-            <Text style={styles.instructionText}>Wait patiently for fish to bite</Text>
+            <Text style={styles.instructionText}>Waiting for fish...</Text>
           </View>
         )}
 
