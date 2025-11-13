@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated, Dimensions, Image, PanResponder } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
@@ -834,25 +834,24 @@ export default function FishingScreen() {
                   opacity: outerRingOpacity,
                 },
               ]}
-              pointerEvents="none"
             />
 
             <Image
               source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton1.jpg' }}
               style={styles.dragButton}
               resizeMode="contain"
-              pointerEvents="none"
             />
           </Animated.View>
         )}
 
         {/* Pull Rod button */}
         {(gamePhase === 'waiting' || gamePhase === 'biting') && (
-          <Pressable
+          <TouchableOpacity
             style={styles.dragButtonContainer}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             onPress={() => {
+              console.log('Button pressed, gamePhase:', gamePhase);
               if (gamePhase === 'biting') {
+                console.log('Starting reeling game...');
                 if (bitingTimeoutRef.current) {
                   clearTimeout(bitingTimeoutRef.current);
                   bitingTimeoutRef.current = null;
@@ -861,6 +860,8 @@ export default function FishingScreen() {
                 startReelingGame();
               }
             }}
+            activeOpacity={0.7}
+            disabled={false}
           >
             {gamePhase === 'biting' && (
               <Animated.View
@@ -871,16 +872,14 @@ export default function FishingScreen() {
                     opacity: reelGlowOpacity,
                   },
                 ]}
-                pointerEvents="none"
               />
             )}
             <Image
               source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
               style={styles.dragButton}
               resizeMode="contain"
-              pointerEvents="none"
             />
-          </Pressable>
+          </TouchableOpacity>
         )}
       </SafeAreaView>
 
@@ -1253,10 +1252,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 40,
-    width: 120,
-    height: 120,
     alignItems: 'center',
-    justifyContent: 'center',
     zIndex: 100,
   },
   outerRing: {
