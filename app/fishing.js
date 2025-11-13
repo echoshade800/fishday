@@ -503,7 +503,7 @@ export default function FishingScreen() {
           ]}
         >
           <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/hook.jpg' }}
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/hook.png' }}
             style={styles.hookImage}
             resizeMode="contain"
           />
