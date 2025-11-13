@@ -645,7 +645,11 @@ export default function FishingScreen() {
           style={[
             styles.exclamationMark,
             {
-              transform: [{ scale: exclamationScale }],
+              transform: [
+                { scale: exclamationScale },
+                { rotate: '30deg' },
+                { translateY: hookBounce },
+              ],
               opacity: exclamationOpacity,
             },
           ]}
@@ -891,11 +895,10 @@ const styles = StyleSheet.create({
   exclamationMark: {
     position: 'absolute',
     bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.25,
-    left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 40,
-    width: 80,
-    height: 80,
+    left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 50,
+    width: 100,
+    height: 100,
     zIndex: 11,
-    transform: [{ rotate: '30deg' }],
   },
   safeArea: {
     flex: 1,
