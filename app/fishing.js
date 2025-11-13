@@ -55,6 +55,7 @@ export default function FishingScreen() {
   });
 
   const bitingTimeoutRef = useRef(null);
+  const waitingTimeoutRef = useRef(null);
 
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
@@ -224,6 +225,22 @@ export default function FishingScreen() {
   }, [swimmingFish]);
 
   useEffect(() => {
+    if (gamePhase === 'waiting') {
+      const randomDelay = 2000 + Math.random() * 3000;
+      waitingTimeoutRef.current = setTimeout(() => {
+        setGamePhase('biting');
+      }, randomDelay);
+    }
+
+    return () => {
+      if (waitingTimeoutRef.current) {
+        clearTimeout(waitingTimeoutRef.current);
+        waitingTimeoutRef.current = null;
+      }
+    };
+  }, [gamePhase]);
+
+  useEffect(() => {
     if (gamePhase === 'biting') {
       Animated.loop(
         Animated.sequence([
@@ -284,6 +301,19 @@ export default function FishingScreen() {
           }),
         ]),
       ]).start();
+
+      bitingTimeoutRef.current = setTimeout(() => {
+        setMissedCount(prev => {
+          const newCount = prev + 1;
+          if (newCount >= 3) {
+            setShowFailDialog(true);
+            setGamePhase('ready');
+            return newCount;
+          }
+          setGamePhase('waiting');
+          return newCount;
+        });
+      }, 2000);
     } else {
       if (bitingTimeoutRef.current) {
         clearTimeout(bitingTimeoutRef.current);
@@ -416,27 +446,6 @@ export default function FishingScreen() {
         ]),
       ]).start(() => {
         setGamePhase('waiting');
-
-        const randomDelay = 2000 + Math.random() * 3000;
-        setTimeout(() => {
-          setGamePhase('biting');
-
-          bitingTimeoutRef.current = setTimeout(() => {
-            setMissedCount(prev => {
-              const newCount = prev + 1;
-              if (newCount >= 3) {
-                setShowFailDialog(true);
-                return newCount;
-              }
-              setGamePhase('waiting');
-              const nextRandomDelay = 2000 + Math.random() * 3000;
-              setTimeout(() => {
-                setGamePhase('biting');
-              }, nextRandomDelay);
-              return newCount;
-            });
-          }, 2000);
-        }, randomDelay);
       });
     });
   };
