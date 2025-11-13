@@ -157,7 +157,7 @@ export default function FishingScreen() {
             styles.castHighlight,
             {
               left: castPosition.x - 60,
-              top: castPosition.y - 60,
+              top: castPosition.y - 40,
               transform: [{ scale: highlightScale }],
             },
           ]}
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   castHighlight: {
     position: 'absolute',
     width: 120,
-    height: 120,
+    height: 80,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   highlightOuter: {
     position: 'absolute',
     width: 120,
-    height: 120,
+    height: 80,
     borderRadius: 60,
     backgroundColor: 'rgba(59, 130, 246, 0.15)',
     borderWidth: 2,
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   highlightInner: {
     position: 'absolute',
     width: 80,
-    height: 80,
+    height: 54,
     borderRadius: 40,
     backgroundColor: 'rgba(96, 165, 250, 0.3)',
     borderWidth: 2,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   highlightCenter: {
     position: 'absolute',
     width: 40,
-    height: 40,
+    height: 27,
     borderRadius: 20,
     backgroundColor: 'rgba(147, 197, 253, 0.5)',
     shadowColor: '#3B82F6',
