@@ -776,7 +776,7 @@ export default function FishingScreen() {
         />
       )}
 
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
         {/* Back button */}
         <TouchableOpacity
           style={styles.backButton}
@@ -847,7 +847,7 @@ export default function FishingScreen() {
         {/* Pull Rod button */}
         {(gamePhase === 'waiting' || gamePhase === 'biting') && (
           <TouchableOpacity
-            style={styles.dragButtonContainer}
+            style={[styles.dragButtonContainer, gamePhase === 'waiting' && styles.buttonDisabled]}
             onPress={() => {
               console.log('Button pressed, gamePhase:', gamePhase);
               if (gamePhase === 'biting') {
@@ -860,8 +860,8 @@ export default function FishingScreen() {
                 startReelingGame();
               }
             }}
-            activeOpacity={0.7}
-            disabled={false}
+            activeOpacity={gamePhase === 'biting' ? 0.7 : 1}
+            disabled={gamePhase !== 'biting'}
           >
             {gamePhase === 'biting' && (
               <Animated.View
@@ -1253,7 +1253,10 @@ const styles = StyleSheet.create({
     bottom: 80,
     right: 40,
     alignItems: 'center',
-    zIndex: 100,
+    zIndex: 150,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   outerRing: {
     position: 'absolute',
