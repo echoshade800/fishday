@@ -216,9 +216,11 @@ export default function FishingScreen() {
             ]}
           />
 
-          <View style={styles.dragButton}>
-            <FishIcon size={40} color="#FFFFFF" strokeWidth={2.5} />
-          </View>
+          <Image
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton.png' }}
+            style={styles.dragButton}
+            resizeMode="contain"
+          />
         </Animated.View>
       </SafeAreaView>
     </View>
@@ -353,17 +355,6 @@ const styles = StyleSheet.create({
   dragButton: {
     width: 80,
     height: 80,
-    borderRadius: 40,
-    backgroundColor: '#3B82F6',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
-    borderWidth: 3,
-    borderColor: '#2563EB',
   },
   dragHint: {
     marginTop: 8,
