@@ -890,7 +890,7 @@ const styles = StyleSheet.create({
   },
   exclamationMark: {
     position: 'absolute',
-    bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.32,
+    bottom: SCREEN_HEIGHT * 0.15 + SCREEN_HEIGHT * 0.25,
     left: SCREEN_WIDTH * 0.35 + SCREEN_WIDTH * 0.15 - 40,
     width: 80,
     height: 80,
