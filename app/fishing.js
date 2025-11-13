@@ -950,15 +950,15 @@ export default function FishingScreen() {
               >
                 <View style={styles.pointerTriangle} />
               </Animated.View>
-            </View>
 
-            <TouchableOpacity
-              style={styles.reelingButton}
-              onPress={handleReelingTap}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.reelingButtonText}>PULL!</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.reelingButton}
+                onPress={handleReelingTap}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.reelingButtonText}>PULL!</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -1456,15 +1456,15 @@ const styles = StyleSheet.create({
   },
   reelingProgress: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '700',
+    color: '#1E293B',
   },
   circleContainer: {
     width: 300,
     height: 300,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
+    position: 'relative',
   },
   pointer: {
     position: 'absolute',
@@ -1486,21 +1486,26 @@ const styles = StyleSheet.create({
     marginLeft: -15,
   },
   reelingButton: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     backgroundColor: '#10B981',
-    paddingHorizontal: 60,
-    paddingVertical: 20,
-    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.6,
     shadowRadius: 12,
-    elevation: 8,
+    elevation: 10,
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
   },
   reelingButtonText: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '700',
     color: '#FFFFFF',
-    letterSpacing: 2,
+    letterSpacing: 1,
   },
   resultCard: {
     backgroundColor: '#FFFFFF',
