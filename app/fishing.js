@@ -17,8 +17,8 @@ import { getRandomFish } from '../constants/fishData';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
 const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
-const ROD_TIP_X = SCREEN_WIDTH * 0.58;
-const ROD_TIP_Y = SCREEN_HEIGHT * 0.48;
+const CHARACTER_X = SCREEN_WIDTH * 0.5;
+const CHARACTER_Y = SCREEN_HEIGHT * 0.65;
 
 export default function FishingScreen() {
   const router = useRouter();
@@ -167,14 +167,14 @@ export default function FishingScreen() {
   ).current;
 
   const generateArcPath = () => {
-    const startX = ROD_TIP_X;
-    const startY = ROD_TIP_Y;
+    const startX = CHARACTER_X;
+    const startY = CHARACTER_Y;
     const endX = castPosition.x;
     const endY = castPosition.y;
 
     const midX = (startX + endX) / 2;
     const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-    const curveHeight = distance * 0.35;
+    const curveHeight = distance * 0.4;
     const controlY = Math.min(startY, endY) - curveHeight;
 
     return `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`;
