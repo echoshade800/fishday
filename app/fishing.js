@@ -25,7 +25,7 @@ const createSwimmingFish = (index) => {
   const padding = 40;
   const startX = padding + Math.random() * (SCREEN_WIDTH - padding * 2);
   const startY = SEA_AREA_TOP + padding + Math.random() * (SEA_AREA_BOTTOM - SEA_AREA_TOP - padding * 2);
-  const speed = 1 + Math.random() * 2;
+  const speed = 2.5 + Math.random() * 3;
   const direction = Math.random() > 0.5 ? 1 : -1;
   const size = 20 + Math.random() * 20;
 
