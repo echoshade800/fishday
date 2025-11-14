@@ -597,9 +597,9 @@ export default function FishingScreen() {
       const newSuccessCount = reelingSuccessCount + 1;
       setReelingSuccessCount(newSuccessCount);
 
-      // Trigger strong haptic feedback on successful tap
+      // Trigger strong and long haptic feedback on successful tap
       if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
 
       if (newSuccessCount >= 3) {
