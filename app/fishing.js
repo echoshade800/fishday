@@ -860,7 +860,7 @@ export default function FishingScreen() {
         />
       )}
 
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
         {/* Back button */}
         <TouchableOpacity
           style={styles.backButton}
