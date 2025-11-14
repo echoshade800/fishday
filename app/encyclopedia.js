@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Star } from 'lucide-react-native';
 import { FISH_DATA } from '../constants/fishData';
 import { useGameStore } from '../store/gameStore';
@@ -16,6 +16,7 @@ const PLACEHOLDER_IMAGE = 'https://osopsbsfioallukblucj.supabase.co/storage/v1/o
 
 export default function EncyclopediaScreen() {
   const router = useRouter();
+  const { fromSuccess } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const catches = useGameStore((state) => state.catches);
 
@@ -68,7 +69,13 @@ export default function EncyclopediaScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.push('/home')}
+            onPress={() => {
+              if (fromSuccess === 'true') {
+                router.back();
+              } else {
+                router.push('/home');
+              }
+            }}
             activeOpacity={0.7}
           >
             <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />

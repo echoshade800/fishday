@@ -636,7 +636,7 @@ export default function FishingScreen() {
   };
 
   const handleEncyclopedia = () => {
-    router.push('/encyclopedia');
+    router.push('/encyclopedia?fromSuccess=true');
   };
 
   return (
