@@ -12,7 +12,7 @@ import { ArrowLeft, Star } from 'lucide-react-native';
 import { FISH_DATA } from '../constants/fishData';
 import { useGameStore } from '../store/gameStore';
 
-const PLACEHOLDER_IMAGE = 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/wenhaofish.png';
+const PLACEHOLDER_IMAGE = 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/wenhaofish.png';
 
 export default function EncyclopediaScreen() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function EncyclopediaScreen() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/bookbackground.png' }}
+      source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/bookbackground.png' }}
       style={styles.background}
       resizeMode="cover"
     >

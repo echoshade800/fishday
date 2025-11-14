@@ -1101,13 +1101,13 @@ export default function FishingScreen() {
             {/* NEW or AGAIN Badge */}
             {isNewFish ? (
               <Image
-                source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/NEW.png' }}
+                source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/NEW.png' }}
                 style={styles.badgeNew}
                 resizeMode="contain"
               />
             ) : (
               <Image
-                source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/AGAIN.png' }}
+                source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/AGAIN.png' }}
                 style={styles.badgeAgain}
                 resizeMode="contain"
               />
