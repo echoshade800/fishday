@@ -568,13 +568,18 @@ export default function FishingScreen() {
   };
 
   const startFishDropAnimation = () => {
+    console.log('Starting fish drop animation...');
+    console.log('SCREEN_HEIGHT:', SCREEN_HEIGHT);
+    console.log('Target Y:', SCREEN_HEIGHT * 0.3);
     fishDropY.setValue(-200);
     Animated.spring(fishDropY, {
       toValue: SCREEN_HEIGHT * 0.3,
       tension: 20,
       friction: 7,
       useNativeDriver: false,
-    }).start();
+    }).start(() => {
+      console.log('Fish drop animation completed');
+    });
   };
 
   const handleRestart = () => {
@@ -1007,6 +1012,8 @@ export default function FishingScreen() {
             source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/successbackground.jpg' }}
             style={styles.successBackground}
             resizeMode="cover"
+            onLoad={() => console.log('Success background loaded')}
+            onError={(e) => console.log('Background error:', e.nativeEvent.error)}
           />
           <Animated.View
             style={[
@@ -1017,11 +1024,15 @@ export default function FishingScreen() {
             ]}
           >
             <Image
-              source={{ uri: `https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/${caughtFish.name.replace(/\s+/g, '')}.png` }}
+              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/VioletScaledFish.png' }}
               style={styles.droppingFishImage}
               resizeMode="contain"
+              onLoad={() => console.log('Fish image loaded')}
+              onError={(e) => console.log('Fish image error:', e.nativeEvent.error)}
             />
           </Animated.View>
+          <Text style={styles.debugText}>Game Phase: {gamePhase}</Text>
+          <Text style={styles.debugText}>Fish: {caughtFish?.name}</Text>
         </View>
       )}
 
@@ -1613,5 +1624,15 @@ const styles = StyleSheet.create({
   droppingFishImage: {
     width: '100%',
     height: '100%',
+  },
+  debugText: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    color: '#fff',
+    fontSize: 16,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 8,
+    zIndex: 2000,
   },
 });
