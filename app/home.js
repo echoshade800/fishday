@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   titleSection: {
     alignItems: 'center',
     marginBottom: 32,
+    marginTop: 110,
   },
   mainTitle: {
     fontSize: 48,
@@ -175,7 +176,6 @@ const styles = StyleSheet.create({
   actionContainer: {
     alignItems: 'center',
     width: '100%',
-    marginTop: 110,
   },
   mainButton: {
     width: '65%',
