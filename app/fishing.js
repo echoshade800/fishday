@@ -1027,12 +1027,8 @@ export default function FishingScreen() {
               source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/VioletScaledFish.png' }}
               style={styles.droppingFishImage}
               resizeMode="contain"
-              onLoad={() => console.log('Fish image loaded')}
-              onError={(e) => console.log('Fish image error:', e.nativeEvent.error)}
             />
           </Animated.View>
-          <Text style={styles.debugText}>Game Phase: {gamePhase}</Text>
-          <Text style={styles.debugText}>Fish: {caughtFish?.name}</Text>
         </View>
       )}
 
