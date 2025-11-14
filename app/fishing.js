@@ -626,6 +626,8 @@ export default function FishingScreen() {
     fishFloatY.stopAnimation();
     fishDropY.setValue(-300);
     fishFloatY.setValue(0);
+    splashScale.setValue(0);
+    splashOpacity.setValue(0);
     setGamePhase('ready');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
