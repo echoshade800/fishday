@@ -67,6 +67,9 @@ export default function FishingScreen() {
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
+  const reelingTimeoutRef = useRef(null);
+  const reelingStartTimeRef = useRef(null);
+  const reelingElapsedTimeRef = useRef(0);
 
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
@@ -347,6 +350,17 @@ export default function FishingScreen() {
   useEffect(() => {
     return () => {
       pointerRotation.removeAllListeners();
+
+      // Clean up timers on unmount
+      if (reelingTimeoutRef.current) {
+        clearTimeout(reelingTimeoutRef.current);
+      }
+      if (bitingTimeoutRef.current) {
+        clearTimeout(bitingTimeoutRef.current);
+      }
+      if (waitingTimeoutRef.current) {
+        clearTimeout(waitingTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -507,6 +521,19 @@ export default function FishingScreen() {
     setReelingFailCount(0);
     generateNewTargetZone();
     startPointerRotation();
+
+    // Start 90 second timeout
+    reelingStartTimeRef.current = Date.now();
+    reelingElapsedTimeRef.current = 0;
+    reelingTimeoutRef.current = setTimeout(() => {
+      // Time's up - trigger fail
+      setGamePhase('fail');
+      pointerRotation.stopAnimation();
+      pointerRotation.removeAllListeners();
+      if (rotationAnimationRef.current) {
+        rotationAnimationRef.current.stop();
+      }
+    }, 90000);
   };
 
   const generateNewTargetZone = () => {
@@ -552,6 +579,12 @@ export default function FishingScreen() {
       setReelingSuccessCount(newSuccessCount);
 
       if (newSuccessCount >= 3) {
+        // Clear reeling timeout
+        if (reelingTimeoutRef.current) {
+          clearTimeout(reelingTimeoutRef.current);
+          reelingTimeoutRef.current = null;
+        }
+
         const fish = getRandomFish();
         console.log('Caught fish:', fish);
         console.log('Fish image URL:', fish.imagePlaceholderUrl);
@@ -574,6 +607,12 @@ export default function FishingScreen() {
       setReelingFailCount(newFailCount);
 
       if (newFailCount >= 2) {
+        // Clear reeling timeout
+        if (reelingTimeoutRef.current) {
+          clearTimeout(reelingTimeoutRef.current);
+          reelingTimeoutRef.current = null;
+        }
+
         setGamePhase('fail');
         pointerRotation.stopAnimation();
         pointerRotation.removeAllListeners();
@@ -644,11 +683,42 @@ export default function FishingScreen() {
       if (rotationAnimationRef.current) {
         rotationAnimationRef.current.stop();
       }
+
+      // Pause the reeling timer
+      if (gamePhase === 'reeling' && reelingTimeoutRef.current) {
+        clearTimeout(reelingTimeoutRef.current);
+        reelingTimeoutRef.current = null;
+
+        // Calculate elapsed time
+        if (reelingStartTimeRef.current) {
+          reelingElapsedTimeRef.current += Date.now() - reelingStartTimeRef.current;
+        }
+      }
     } else {
       // Resume the rotation animation only if in reeling phase
       if (gamePhase === 'reeling') {
         // Re-create and start the animation
         startPointerRotation();
+
+        // Resume the reeling timer with remaining time
+        const remainingTime = 90000 - reelingElapsedTimeRef.current;
+        if (remainingTime > 0) {
+          reelingStartTimeRef.current = Date.now();
+          reelingTimeoutRef.current = setTimeout(() => {
+            // Time's up - trigger fail
+            setGamePhase('fail');
+            pointerRotation.stopAnimation();
+            pointerRotation.removeAllListeners();
+            if (rotationAnimationRef.current) {
+              rotationAnimationRef.current.stop();
+            }
+          }, remainingTime);
+        } else {
+          // Time already up
+          setGamePhase('fail');
+          pointerRotation.stopAnimation();
+          pointerRotation.removeAllListeners();
+        }
       }
     }
   }, [showPauseMenu, gamePhase]);
