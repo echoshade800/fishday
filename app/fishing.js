@@ -1056,6 +1056,25 @@ export default function FishingScreen() {
               resizeMode="contain"
             />
           </Animated.View>
+
+          {/* Fish Info Card */}
+          <View style={styles.fishInfoCard}>
+            <View style={styles.fishImageCircle}>
+              <Image
+                source={{ uri: caughtFish.image }}
+                style={styles.fishCardImage}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.fishInfoContent}>
+              <Text style={styles.fishCardName}>{caughtFish.name}</Text>
+              <View style={styles.rarityStars}>
+                {[...Array(caughtFish.rarity)].map((_, index) => (
+                  <Text key={index} style={styles.star}>⭐</Text>
+                ))}
+              </View>
+            </View>
+          </View>
         </View>
       )}
 
@@ -1647,6 +1666,59 @@ const styles = StyleSheet.create({
   droppingFishImage: {
     width: '100%',
     height: '100%',
+  },
+  fishInfoCard: {
+    position: 'absolute',
+    bottom: 120,
+    left: 20,
+    right: 20,
+    backgroundColor: '#FFD93D',
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1002,
+  },
+  fishImageCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  fishCardImage: {
+    width: 70,
+    height: 70,
+  },
+  fishInfoContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  fishCardName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2D3748',
+    marginBottom: 8,
+  },
+  rarityStars: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  star: {
+    fontSize: 20,
+    marginRight: 4,
   },
   debugText: {
     position: 'absolute',
