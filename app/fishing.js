@@ -84,6 +84,7 @@ export default function FishingScreen() {
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
   const fishDropY = useRef(new Animated.Value(-200)).current;
+  const fishFloatY = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -567,25 +568,45 @@ export default function FishingScreen() {
     }
   };
 
+  const startFishFloatAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fishFloatY, {
+          toValue: -15,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+        Animated.timing(fishFloatY, {
+          toValue: 15,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  };
+
   const startFishDropAnimation = () => {
-    console.log('Starting fish drop animation...');
-    console.log('SCREEN_HEIGHT:', SCREEN_HEIGHT);
-    console.log('Target Y:', SCREEN_HEIGHT * 0.3);
     fishDropY.setValue(-200);
+    fishFloatY.setValue(0);
     Animated.spring(fishDropY, {
       toValue: SCREEN_HEIGHT * 0.3,
       tension: 20,
       friction: 7,
       useNativeDriver: false,
     }).start(() => {
-      console.log('Fish drop animation completed');
+      startFishFloatAnimation();
     });
   };
 
   const handleRestart = () => {
     pointerRotation.stopAnimation();
     pointerRotation.removeAllListeners();
+    fishDropY.stopAnimation();
+    fishFloatY.stopAnimation();
     fishDropY.setValue(-200);
+    fishFloatY.setValue(0);
     setGamePhase('ready');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
@@ -1019,7 +1040,7 @@ export default function FishingScreen() {
             style={[
               styles.droppingFish,
               {
-                top: fishDropY,
+                top: Animated.add(fishDropY, fishFloatY),
               },
             ]}
           >
