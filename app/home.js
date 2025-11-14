@@ -64,37 +64,40 @@ export default function HomeScreen() {
             <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
           </View>
 
-          {/* Main action button */}
-          <TouchableOpacity
-            style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
-            onPress={handleStartFishing}
-            disabled={!canFish}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.mainButtonText}>
-              {canFish ? 'Go Fishing' : 'Out of Tries'}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Navigation buttons */}
-          <View style={styles.navButtonRow}>
+          {/* Center content with button and cards */}
+          <View style={styles.centerContent}>
+            {/* Main action button */}
             <TouchableOpacity
-              style={styles.navButton}
-              onPress={() => router.push('/encyclopedia')}
+              style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
+              onPress={handleStartFishing}
+              disabled={!canFish}
               activeOpacity={0.8}
             >
-              <Text style={styles.navButtonIcon}>📚</Text>
-              <Text style={styles.navButtonText}>Fish Book</Text>
+              <Text style={styles.mainButtonText}>
+                ▶ {canFish ? 'PLAY' : 'OUT OF TRIES'}
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.navButton}
-              onPress={() => router.push('/profile')}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.navButtonIcon}>👤</Text>
-              <Text style={styles.navButtonText}>Profile</Text>
-            </TouchableOpacity>
+            {/* Navigation buttons */}
+            <View style={styles.navButtonRow}>
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={() => router.push('/encyclopedia')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.navButtonIcon}>📚</Text>
+                <Text style={styles.navButtonText}>Fish Book</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={() => router.push('/profile')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.navButtonIcon}>👤</Text>
+                <Text style={styles.navButtonText}>Profile</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Stats dashboard */}
@@ -141,69 +144,78 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginTop: 40,
   },
   mainTitle: {
-    fontSize: 36,
+    fontSize: 48,
     fontWeight: 'bold',
     color: '#1E3A5F',
     textAlign: 'center',
     marginBottom: 8,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   mainSubtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#1E3A5F',
     textAlign: 'center',
     opacity: 0.8,
     fontStyle: 'italic',
   },
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
   mainButton: {
-    width: '100%',
-    backgroundColor: '#0891B2',
-    paddingVertical: 18,
-    borderRadius: 20,
-    marginBottom: 12,
+    width: '80%',
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 20,
+    borderRadius: 30,
+    marginBottom: 32,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 8,
   },
   mainButtonDisabled: {
     backgroundColor: '#94A3B8',
     opacity: 0.6,
   },
   mainButtonText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   navButtonRow: {
     width: '100%',
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
+    gap: 16,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   navButton: {
-    flex: 1,
+    width: 120,
+    height: 120,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(224, 242, 254, 0.85)',
-    paddingVertical: 20,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    aspectRatio: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
   },
   navButtonIcon: {
-    fontSize: 32,
+    fontSize: 40,
     marginBottom: 8,
   },
   navButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#1E3A5F',
     fontWeight: '600',
   },
