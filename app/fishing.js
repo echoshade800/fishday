@@ -547,6 +547,8 @@ export default function FishingScreen() {
 
       if (newSuccessCount >= 3) {
         const fish = getRandomFish();
+        console.log('Caught fish:', fish);
+        console.log('Fish image URL:', fish.imagePlaceholderUrl);
         setCaughtFish(fish);
         setGamePhase('success');
         pointerRotation.stopAnimation();
@@ -1051,9 +1053,11 @@ export default function FishingScreen() {
             ]}
           >
             <Image
-              source={{ uri: caughtFish.image }}
+              source={{ uri: caughtFish.imagePlaceholderUrl }}
               style={styles.droppingFishImage}
               resizeMode="contain"
+              onLoad={() => console.log('Dropping fish image loaded:', caughtFish.imagePlaceholderUrl)}
+              onError={(e) => console.log('Dropping fish error:', e.nativeEvent.error)}
             />
           </Animated.View>
 
@@ -1061,9 +1065,11 @@ export default function FishingScreen() {
           <View style={styles.fishInfoCard}>
             <View style={styles.fishImageCircle}>
               <Image
-                source={{ uri: caughtFish.image }}
+                source={{ uri: caughtFish.imagePlaceholderUrl }}
                 style={styles.fishCardImage}
                 resizeMode="contain"
+                onLoad={() => console.log('Card fish image loaded:', caughtFish.imagePlaceholderUrl)}
+                onError={(e) => console.log('Card fish error:', e.nativeEvent.error)}
               />
             </View>
             <View style={styles.fishInfoContent}>
