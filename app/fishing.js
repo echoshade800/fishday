@@ -572,16 +572,16 @@ export default function FishingScreen() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(fishFloatY, {
-          toValue: -20,
-          duration: 2000,
-          easing: Easing.bezier(0.4, 0.0, 0.6, 1.0),
-          useNativeDriver: true,
+          toValue: -15,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
         }),
         Animated.timing(fishFloatY, {
-          toValue: 20,
-          duration: 2000,
-          easing: Easing.bezier(0.4, 0.0, 0.6, 1.0),
-          useNativeDriver: true,
+          toValue: 15,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
         }),
       ])
     ).start();
@@ -594,7 +594,7 @@ export default function FishingScreen() {
       toValue: SCREEN_HEIGHT * 0.3,
       tension: 20,
       friction: 7,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       startFishFloatAnimation();
     });
@@ -1040,9 +1040,7 @@ export default function FishingScreen() {
             style={[
               styles.droppingFish,
               {
-                transform: [
-                  { translateY: Animated.add(fishDropY, fishFloatY) }
-                ],
+                top: Animated.add(fishDropY, fishFloatY),
               },
             ]}
           >
@@ -1634,7 +1632,6 @@ const styles = StyleSheet.create({
   },
   droppingFish: {
     position: 'absolute',
-    top: -200,
     left: '50%',
     marginLeft: -100,
     width: 200,
