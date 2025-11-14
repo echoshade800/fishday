@@ -652,17 +652,38 @@ export default function FishingScreen() {
 
   // Handle pause menu - stop/resume pointer rotation
   useEffect(() => {
-    if (showPauseMenu) {
-      // Pause the rotation animation
-      if (rotationAnimationRef.current) {
-        rotationAnimationRef.current.stop();
-      }
-    } else {
-      // Resume the rotation animation only if in reeling phase
-      if (gamePhase === 'reeling' && rotationAnimationRef.current) {
-        rotationAnimationRef.current.start();
+    if (gamePhase === 'reeling') {
+      if (showPauseMenu) {
+        // Pause the rotation animation
+        if (rotationAnimationRef.current) {
+          rotationAnimationRef.current.stop();
+        }
+      } else {
+        // Resume the rotation animation by restarting it
+        if (rotationAnimationRef.current) {
+          rotationAnimationRef.current.stop();
+        }
+
+        // Restart the rotation animation
+        const rotationAnimation = Animated.loop(
+          Animated.timing(pointerRotation, {
+            toValue: currentRotationRef.current + 360,
+            duration: 2000,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          })
+        );
+
+        rotationAnimation.start();
+        rotationAnimationRef.current = rotationAnimation;
       }
     }
+
+    return () => {
+      if (rotationAnimationRef.current && gamePhase !== 'reeling') {
+        rotationAnimationRef.current.stop();
+      }
+    };
   }, [showPauseMenu, gamePhase]);
 
   // Handle reeling timer - 90 second countdown
