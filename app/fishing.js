@@ -809,7 +809,10 @@ export default function FishingScreen() {
     router.replace('/fishing');
   };
 
-  const handleHome = () => {
+  const handleHome = async () => {
+    if (bgMusicRef.current) {
+      await bgMusicRef.current.stopAsync();
+    }
     router.push('/home');
   };
 
@@ -1547,7 +1550,10 @@ export default function FishingScreen() {
                 <>
                   <TouchableOpacity
                     style={[styles.dialogButton, styles.cancelButton]}
-                    onPress={() => {
+                    onPress={async () => {
+                      if (bgMusicRef.current) {
+                        await bgMusicRef.current.stopAsync();
+                      }
                       setShowFailDialog(false);
                       router.push('/home');
                     }}
@@ -1566,7 +1572,10 @@ export default function FishingScreen() {
               ) : (
                 <TouchableOpacity
                   style={[styles.dialogButton, styles.confirmButton, { flex: 1 }]}
-                  onPress={() => {
+                  onPress={async () => {
+                    if (bgMusicRef.current) {
+                      await bgMusicRef.current.stopAsync();
+                    }
                     setShowFailDialog(false);
                     router.push('/home');
                   }}
