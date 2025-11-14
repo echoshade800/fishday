@@ -1676,7 +1676,7 @@ const styles = StyleSheet.create({
   },
   fishInfoCard: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 90,
     left: 20,
     right: 20,
     backgroundColor: '#FFD93D',
