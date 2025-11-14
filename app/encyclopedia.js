@@ -140,6 +140,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 8,
+    minWidth: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   filterChipActive: {
     backgroundColor: '#0891B2',
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748B',
     fontWeight: '500',
+    lineHeight: 18,
   },
   filterChipTextActive: {
     color: '#FFFFFF',
