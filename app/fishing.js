@@ -96,6 +96,9 @@ export default function FishingScreen() {
   const rotationAnimationRef = useRef(null);
   const fishDropY = useRef(new Animated.Value(-300)).current;
   const fishFloatY = useRef(new Animated.Value(0)).current;
+  const cardScale = useRef(new Animated.Value(0)).current;
+  const cardOpacity = useRef(new Animated.Value(0)).current;
+  const buttonsOpacity = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -669,16 +672,48 @@ export default function FishingScreen() {
   };
 
   const startFishDropAnimation = () => {
+    // Reset all animation values
     fishDropY.setValue(-300);
     fishFloatY.setValue(0);
-    Animated.spring(fishDropY, {
-      toValue: SCREEN_HEIGHT * 0.35,
-      tension: 20,
-      friction: 7,
-      useNativeDriver: false,
-    }).start(() => {
-      startFishFloatAnimation();
-    });
+    cardScale.setValue(0);
+    cardOpacity.setValue(0);
+    buttonsOpacity.setValue(0);
+
+    // Wait 1 second before fish drops
+    setTimeout(() => {
+      // Fish drops down
+      Animated.spring(fishDropY, {
+        toValue: SCREEN_HEIGHT * 0.35,
+        tension: 20,
+        friction: 7,
+        useNativeDriver: false,
+      }).start(() => {
+        // Fish landed, start floating animation
+        startFishFloatAnimation();
+
+        // Card pops out with bounce effect
+        Animated.parallel([
+          Animated.spring(cardScale, {
+            toValue: 1,
+            tension: 50,
+            friction: 7,
+            useNativeDriver: true,
+          }),
+          Animated.timing(cardOpacity, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          // After card appears, show buttons
+          Animated.timing(buttonsOpacity, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }).start();
+        });
+      });
+    }, 1000);
   };
 
   const handleRestart = () => {
@@ -1210,7 +1245,15 @@ export default function FishingScreen() {
           </Animated.View>
 
           {/* Fish Info Card */}
-          <View style={styles.fishInfoCard}>
+          <Animated.View
+            style={[
+              styles.fishInfoCard,
+              {
+                opacity: cardOpacity,
+                transform: [{ scale: cardScale }],
+              },
+            ]}
+          >
             {/* NEW or AGAIN Badge */}
             {isNewFish ? (
               <Image
@@ -1248,10 +1291,17 @@ export default function FishingScreen() {
                 ))}
               </View>
             </View>
-          </View>
+          </Animated.View>
 
           {/* Action Buttons */}
-          <View style={styles.successButtons}>
+          <Animated.View
+            style={[
+              styles.successButtons,
+              {
+                opacity: buttonsOpacity,
+              },
+            ]}
+          >
             <TouchableOpacity
               style={[styles.successButton, styles.encyclopediaButton]}
               onPress={handleEncyclopedia}
@@ -1266,7 +1316,7 @@ export default function FishingScreen() {
             >
               <Text style={styles.successButtonText}>Go Home</Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </View>
       )}
 
