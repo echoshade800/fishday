@@ -108,7 +108,7 @@ export default function HomeScreen() {
             <View style={styles.statsDivider} />
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Tries Today</Text>
+                <Text style={styles.statLabel}>Tries Limited</Text>
                 <Text style={styles.statValue}>{remainingTries}/3</Text>
               </View>
               <View style={styles.statItem}>
