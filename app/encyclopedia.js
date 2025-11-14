@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,14 +16,12 @@ import FishCard from '../components/FishCard';
 export default function EncyclopediaScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedRarity, setSelectedRarity] = useState('all');
 
-  // Filter fish based on search and rarity
+  // Filter fish based on rarity
   const filteredFish = FISH_DATA.filter((fish) => {
-    const matchesSearch = fish.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRarity = selectedRarity === 'all' || fish.rarity === parseInt(selectedRarity);
-    return matchesSearch && matchesRarity;
+    return matchesRarity;
   });
 
   const rarityFilters = [
@@ -53,16 +51,6 @@ export default function EncyclopediaScreen() {
           <Text style={styles.subtitle}>{filteredFish.length} species</Text>
         </View>
 
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search fish..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor="#94A3B8"
-          />
-        </View>
-
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -86,7 +74,7 @@ export default function EncyclopediaScreen() {
         {filteredFish.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No fish found</Text>
-            <Text style={styles.emptySubtext}>Try adjusting your search or filters</Text>
+            <Text style={styles.emptySubtext}>Try adjusting your filters</Text>
           </View>
         ) : (
           <FlatList
@@ -130,23 +118,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: '#64748B',
-  },
-  searchContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 12,
-  },
-  searchInput: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    fontSize: 16,
-    color: '#0F172A',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
   },
   filterScroll: {
     marginBottom: 12,
