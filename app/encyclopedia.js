@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#FFFFFF',
   },
   list: {
     padding: 20,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   fishName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#0F172A',
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 4,
     paddingHorizontal: 4,
