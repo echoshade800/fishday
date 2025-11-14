@@ -64,9 +64,11 @@ export default function FishingScreen() {
   const [targetZoneEnd, setTargetZoneEnd] = useState(60);
   const [caughtFish, setCaughtFish] = useState(null);
   const [isNewFish, setIsNewFish] = useState(false);
+  const [reelingTimeLeft, setReelingTimeLeft] = useState(90);
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
+  const reelingTimerRef = useRef(null);
 
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
@@ -505,6 +507,7 @@ export default function FishingScreen() {
     setGamePhase('reeling');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
+    setReelingTimeLeft(90);
     generateNewTargetZone();
     startPointerRotation();
   };
@@ -552,6 +555,11 @@ export default function FishingScreen() {
       setReelingSuccessCount(newSuccessCount);
 
       if (newSuccessCount >= 3) {
+        if (reelingTimerRef.current) {
+          clearInterval(reelingTimerRef.current);
+          reelingTimerRef.current = null;
+        }
+
         const fish = getRandomFish();
         console.log('Caught fish:', fish);
         console.log('Fish image URL:', fish.imagePlaceholderUrl);
@@ -574,6 +582,11 @@ export default function FishingScreen() {
       setReelingFailCount(newFailCount);
 
       if (newFailCount >= 2) {
+        if (reelingTimerRef.current) {
+          clearInterval(reelingTimerRef.current);
+          reelingTimerRef.current = null;
+        }
+
         setGamePhase('fail');
         pointerRotation.stopAnimation();
         pointerRotation.removeAllListeners();
@@ -651,6 +664,37 @@ export default function FishingScreen() {
       }
     }
   }, [showPauseMenu, gamePhase]);
+
+  // Handle reeling timer - 90 second countdown
+  useEffect(() => {
+    if (gamePhase === 'reeling' && !showPauseMenu) {
+      reelingTimerRef.current = setInterval(() => {
+        setReelingTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(reelingTimerRef.current);
+            setReelingFailCount(3);
+            setGamePhase('fail');
+            pointerRotation.stopAnimation();
+            pointerRotation.removeAllListeners();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (reelingTimerRef.current) {
+        clearInterval(reelingTimerRef.current);
+        reelingTimerRef.current = null;
+      }
+    }
+
+    return () => {
+      if (reelingTimerRef.current) {
+        clearInterval(reelingTimerRef.current);
+        reelingTimerRef.current = null;
+      }
+    };
+  }, [gamePhase, showPauseMenu]);
 
   return (
     <View style={styles.container}>
@@ -1057,6 +1101,9 @@ export default function FishingScreen() {
             <View style={styles.reelingProgressContainer}>
               <Text style={styles.reelingProgress}>
                 Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
+              </Text>
+              <Text style={styles.reelingTimer}>
+                Time: {reelingTimeLeft}s
               </Text>
             </View>
           </View>
@@ -1769,6 +1816,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: '#1E293B',
+  },
+  reelingTimer: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#DC2626',
+    marginTop: 4,
   },
   circleContainer: {
     width: 200,
