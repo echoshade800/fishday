@@ -1036,7 +1036,7 @@ export default function FishingScreen() {
       {gamePhase === 'success' && caughtFish && (
         <View style={styles.successScreen}>
           <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/successbackground.jpg' }}
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/successbackground%20(1).jpg' }}
             style={styles.successBackground}
             resizeMode="cover"
             onLoad={() => console.log('Success background loaded')}
