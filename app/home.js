@@ -78,8 +78,8 @@ export default function HomeScreen() {
 
           {/* Main title */}
           <View style={styles.titleSection}>
-            <Text style={styles.mainTitle}>Relax. Cast. Catch.</Text>
-            <Text style={styles.mainSubtitle}>A mini fishing game for quick breaks.</Text>
+            <Text style={styles.mainTitle}>fishyday</Text>
+            <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
           </View>
 
           {/* Feature cards */}
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     color: '#1E3A5F',
     textAlign: 'center',
     opacity: 0.8,
+    fontStyle: 'italic',
   },
   featureCard: {
     width: '100%',
