@@ -83,6 +83,7 @@ export default function FishingScreen() {
 
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
+  const fishDropY = useRef(new Animated.Value(-200)).current;
 
   const swimmingFish = useMemo(() => {
     return Array.from({ length: NUM_FISH }, (_, i) => createSwimmingFish(i));
@@ -550,6 +551,7 @@ export default function FishingScreen() {
         pointerRotation.stopAnimation();
         pointerRotation.removeAllListeners();
         await addCatch(fish);
+        startFishDropAnimation();
       } else {
         generateNewTargetZone();
       }
@@ -565,9 +567,20 @@ export default function FishingScreen() {
     }
   };
 
+  const startFishDropAnimation = () => {
+    fishDropY.setValue(-200);
+    Animated.spring(fishDropY, {
+      toValue: SCREEN_HEIGHT * 0.3,
+      tension: 20,
+      friction: 7,
+      useNativeDriver: false,
+    }).start();
+  };
+
   const handleRestart = () => {
     pointerRotation.stopAnimation();
     pointerRotation.removeAllListeners();
+    fishDropY.setValue(-200);
     setGamePhase('ready');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
@@ -989,33 +1002,26 @@ export default function FishingScreen() {
 
       {/* Success Dialog */}
       {gamePhase === 'success' && caughtFish && (
-        <View style={styles.dialogOverlay}>
-          <View style={styles.resultCard}>
-            <Text style={styles.resultTitle}>🎉 Nice Catch!</Text>
+        <View style={styles.successScreen}>
+          <Image
+            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/successbackground.jpg' }}
+            style={styles.successBackground}
+            resizeMode="cover"
+          />
+          <Animated.View
+            style={[
+              styles.droppingFish,
+              {
+                top: fishDropY,
+              },
+            ]}
+          >
             <Image
-              source={{ uri: caughtFish.imagePlaceholderUrl }}
-              style={styles.resultFishImage}
-              resizeMode="cover"
+              source={{ uri: `https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/${caughtFish.name.replace(/\s+/g, '')}.png` }}
+              style={styles.droppingFishImage}
+              resizeMode="contain"
             />
-            <Text style={styles.resultFishName}>{caughtFish.name}</Text>
-            <Text style={styles.resultMessage}>Added to your collection!</Text>
-            <View style={styles.dialogButtons}>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.cancelButton]}
-                onPress={handleRestart}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.cancelButtonText}>Restart</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.confirmButton]}
-                onPress={handleHome}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.confirmButtonText}>Home</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </Animated.View>
         </View>
       )}
 
@@ -1583,5 +1589,29 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginBottom: 24,
     textAlign: 'center',
+  },
+  successScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+  },
+  successBackground: {
+    width: '100%',
+    height: '100%',
+  },
+  droppingFish: {
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -100,
+    width: 200,
+    height: 200,
+    zIndex: 1001,
+  },
+  droppingFishImage: {
+    width: '100%',
+    height: '100%',
   },
 });
