@@ -624,15 +624,62 @@ export default function FishingScreen() {
     pointerRotation.removeAllListeners();
     fishDropY.stopAnimation();
     fishFloatY.stopAnimation();
+    dragButtonScale.stopAnimation();
+    dragButtonY.stopAnimation();
+    arcGlowAnim.stopAnimation();
+    rippleAnim.stopAnimation();
+    hookX.stopAnimation();
+    hookY.stopAnimation();
+
+    if (rotationAnimationRef.current) {
+      rotationAnimationRef.current.stop();
+      rotationAnimationRef.current = null;
+    }
+
+    if (bitingTimeoutRef.current) {
+      clearTimeout(bitingTimeoutRef.current);
+      bitingTimeoutRef.current = null;
+    }
+
+    if (waitingTimeoutRef.current) {
+      clearTimeout(waitingTimeoutRef.current);
+      waitingTimeoutRef.current = null;
+    }
+
+    dragButtonScale.setValue(1);
+    dragButtonY.setValue(0);
+    outerRingScale.setValue(0);
+    outerRingOpacity.setValue(0);
+    highlightScale.setValue(1);
+    arcGlowAnim.setValue(0);
+    rippleAnim.setValue(0);
     fishDropY.setValue(-300);
     fishFloatY.setValue(0);
+    pointerRotation.setValue(0);
+    currentRotationRef.current = 0;
+    hookX.setValue(CHARACTER_X + 6);
+    hookY.setValue(CHARACTER_Y);
+    splashScale.setValue(0);
+    splashOpacity.setValue(0);
+    hookBounce.setValue(0);
+    reelGlowScale.setValue(1);
+    reelGlowOpacity.setValue(0);
+    exclamationScale.setValue(0);
+    exclamationOpacity.setValue(0);
+
     setGamePhase('ready');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
     setMissedCount(0);
     setCaughtFish(null);
-    hookX.setValue(CHARACTER_X + 6);
-    hookY.setValue(CHARACTER_Y);
+    setIsNewFish(false);
+    setIsDragging(false);
+    setShowPauseMenu(false);
+    setShowFailDialog(false);
+    setCastPosition({
+      x: SCREEN_WIDTH / 2,
+      y: SEA_AREA_TOP + (SEA_AREA_BOTTOM - SEA_AREA_TOP) / 2,
+    });
   };
 
   const handleHome = () => {
@@ -1273,7 +1320,8 @@ export default function FishingScreen() {
               <TouchableOpacity
                 style={[styles.dialogButton, styles.confirmButton]}
                 onPress={() => {
-                  router.replace('/fishing');
+                  setShowFailDialog(false);
+                  handleRestart();
                 }}
                 activeOpacity={0.8}
               >
