@@ -1051,7 +1051,7 @@ export default function FishingScreen() {
             ]}
           >
             <Image
-              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/VioletScaledFish.png' }}
+              source={{ uri: caughtFish.image }}
               style={styles.droppingFishImage}
               resizeMode="contain"
             />
