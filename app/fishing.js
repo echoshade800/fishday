@@ -1613,17 +1613,17 @@ const styles = StyleSheet.create({
   },
   pointer: {
     position: 'absolute',
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     top: '50%',
     left: '50%',
-    marginLeft: -20,
-    marginTop: -20,
+    marginLeft: -30,
+    marginTop: -30,
     zIndex: 10,
   },
   pointerImage: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
   reelingButton: {
     position: 'absolute',
