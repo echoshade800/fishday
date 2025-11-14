@@ -74,7 +74,7 @@ export default function HomeScreen() {
               activeOpacity={0.8}
             >
               <Text style={styles.mainButtonText}>
-                {canFish ? 'Go to Fish' : 'Out of Tries'}
+                {canFish ? '▶ Go to Fish' : 'Out of Tries'}
               </Text>
             </TouchableOpacity>
 
