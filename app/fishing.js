@@ -862,18 +862,19 @@ export default function FishingScreen() {
         />
       )}
 
+      {/* Pause button - moved outside SafeAreaView for better touch response */}
+      <TouchableOpacity
+        style={styles.pauseButton}
+        onPress={() => setShowPauseMenu(true)}
+        activeOpacity={0.7}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <View style={styles.pauseButtonCircle}>
+          <Pause size={24} color="#334155" />
+        </View>
+      </TouchableOpacity>
+
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
-        {/* Pause button */}
-        <TouchableOpacity
-          style={styles.pauseButton}
-          onPress={() => setShowPauseMenu(true)}
-          activeOpacity={0.7}
-          pointerEvents="auto"
-        >
-          <View style={styles.pauseButtonCircle}>
-            <Pause size={24} color="#334155" />
-          </View>
-        </TouchableOpacity>
 
         {/* Top Instruction Text */}
         {gamePhase === 'ready' && (
@@ -1395,21 +1396,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 80,
     left: 20,
-    zIndex: 1000,
-    elevation: 1000,
+    zIndex: 9999,
+    elevation: 9999,
   },
   pauseButtonCircle: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   pauseOverlay: {
     position: 'absolute',
