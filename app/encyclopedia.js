@@ -58,16 +58,24 @@ export default function EncyclopediaScreen() {
           contentContainerStyle={styles.filterContainer}
         >
           {rarityFilters.map((filter) => (
-            <Text
+            <TouchableOpacity
               key={filter.value}
               style={[
                 styles.filterChip,
                 selectedRarity === filter.value && styles.filterChipActive,
               ]}
               onPress={() => setSelectedRarity(filter.value)}
+              activeOpacity={0.7}
             >
-              {filter.label}
-            </Text>
+              <Text
+                style={[
+                  styles.filterChipText,
+                  selectedRarity === filter.value && styles.filterChipTextActive,
+                ]}
+              >
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
           ))}
         </ScrollView>
 
@@ -131,13 +139,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    fontSize: 14,
-    color: '#64748B',
-    fontWeight: '500',
-    overflow: 'hidden',
+    marginRight: 8,
   },
   filterChipActive: {
     backgroundColor: '#0891B2',
+  },
+  filterChipText: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
     color: '#FFFFFF',
   },
   list: {
