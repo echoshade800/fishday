@@ -630,7 +630,7 @@ export default function FishingScreen() {
     <View style={styles.container}>
       {/* Background Image */}
       <Image
-        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
+        source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/gamebackground.jpg' }}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
@@ -770,7 +770,7 @@ export default function FishingScreen() {
           pointerEvents="none"
         >
           <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/hook.png' }}
+            source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/hook.png' }}
             style={styles.hookImage}
             resizeMode="contain"
           />
@@ -801,7 +801,7 @@ export default function FishingScreen() {
       {swimmingFish.map((fish, index) => (
         <Animated.Image
           key={fish.id}
-          source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/smallfish.png' }}
+          source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/smallfish.png' }}
           style={[
             styles.swimmingFish,
             {
@@ -821,7 +821,7 @@ export default function FishingScreen() {
 
       {/* Character Image */}
       <Image
-        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishpeople1.png' }}
+        source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishpeople1.png' }}
         style={styles.characterImage}
         resizeMode="contain"
         pointerEvents="none"
@@ -830,7 +830,7 @@ export default function FishingScreen() {
       {/* Exclamation Mark */}
       {(gamePhase === 'biting') && (
         <Animated.Image
-          source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/Exclamationmark.png' }}
+          source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/Exclamationmark.png' }}
           style={[
             styles.exclamationMark,
             {
@@ -915,7 +915,7 @@ export default function FishingScreen() {
             />
 
             <Image
-              source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton1.jpg' }}
+              source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishbutton1.jpg' }}
               style={styles.dragButton}
               resizeMode="contain"
             />
@@ -957,7 +957,7 @@ export default function FishingScreen() {
             />
           )}
           <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/fishbutton2.jpg' }}
+            source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishbutton2.jpg' }}
             style={styles.dragButton}
             resizeMode="contain"
             pointerEvents="none"
@@ -1036,7 +1036,7 @@ export default function FishingScreen() {
       {gamePhase === 'success' && caughtFish && (
         <View style={styles.successScreen}>
           <Image
-            source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/successbackground%20(1).jpg' }}
+            source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/successbackground.jpg' }}
             style={styles.successBackground}
             resizeMode="cover"
             onLoad={() => console.log('Success background loaded')}
