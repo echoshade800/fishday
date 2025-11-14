@@ -49,7 +49,7 @@ export default function EncyclopediaScreen() {
           >
             <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
           </TouchableOpacity>
-          <Text style={styles.title}>Fish Encyclopedia</Text>
+          <Text style={styles.title}>Fish Book</Text>
           <Text style={styles.subtitle}>{filteredFish.length} species</Text>
         </View>
 
