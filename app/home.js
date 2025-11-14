@@ -58,11 +58,6 @@ export default function HomeScreen() {
     >
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <View style={styles.content}>
-          {/* Top decoration */}
-          <View style={styles.topDecoration}>
-            <Text style={styles.decorationEmoji}>🎣</Text>
-          </View>
-
           {/* Main title */}
           <View style={styles.titleSection}>
             <Text style={styles.mainTitle}>FishyDay</Text>
@@ -154,15 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFFFFF',
     fontWeight: '600',
-  },
-  topDecoration: {
-    alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 12,
-  },
-  decorationEmoji: {
-    fontSize: 48,
-    textAlign: 'center',
   },
   titleSection: {
     alignItems: 'center',
