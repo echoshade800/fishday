@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { renderStars } from '../constants/fishData';
 
-export default function FishCard({ fish, onPress }) {
+export default function FishCard({ fish }) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.8}>
+    <View style={styles.container}>
       <Image
         source={{ uri: fish.imagePlaceholderUrl }}
         style={styles.image}
@@ -21,7 +21,7 @@ export default function FishCard({ fish, onPress }) {
         </Text>
         <Text style={styles.rarity}>{renderStars(fish.rarity)}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

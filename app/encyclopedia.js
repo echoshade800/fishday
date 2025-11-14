@@ -22,20 +22,12 @@ export default function EncyclopediaScreen() {
 
   const caughtFishIds = new Set(catches.map((c) => c.fishId));
 
-  const handleFishPress = (fishId) => {
-    router.push(`/details/${fishId}`);
-  };
-
   const renderFishItem = ({ item }) => {
     const isCaught = caughtFishIds.has(item.id);
     const imageUrl = isCaught ? item.imagePlaceholderUrl : PLACEHOLDER_IMAGE;
 
     return (
-      <TouchableOpacity
-        style={styles.fishItem}
-        onPress={() => handleFishPress(item.id)}
-        activeOpacity={0.7}
-      >
+      <View style={styles.fishItem}>
         <Image
           source={{ uri: imageUrl }}
           style={styles.fishImage}
@@ -55,7 +47,7 @@ export default function EncyclopediaScreen() {
             />
           ))}
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
