@@ -635,6 +635,10 @@ export default function FishingScreen() {
     router.push('/home');
   };
 
+  const handleEncyclopedia = () => {
+    router.push('/encyclopedia');
+  };
+
   return (
     <View style={styles.container}>
       {/* Background Image */}
@@ -1107,6 +1111,24 @@ export default function FishingScreen() {
                 ))}
               </View>
             </View>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.successButtons}>
+            <TouchableOpacity
+              style={[styles.successButton, styles.encyclopediaButton]}
+              onPress={handleEncyclopedia}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.successButtonText}>Fish Book</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.successButton, styles.homeButton]}
+              onPress={handleHome}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.successButtonText}>Go Home</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -1769,6 +1791,40 @@ const styles = StyleSheet.create({
   star: {
     fontSize: 20,
     marginRight: 4,
+  },
+  successButtons: {
+    position: 'absolute',
+    bottom: 20,
+    left: 40,
+    right: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    zIndex: 1001,
+  },
+  successButton: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  encyclopediaButton: {
+    backgroundColor: '#4ECDC4',
+  },
+  homeButton: {
+    backgroundColor: '#FF6B6B',
+  },
+  successButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   debugText: {
     position: 'absolute',
