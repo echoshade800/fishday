@@ -1639,9 +1639,9 @@ const styles = StyleSheet.create({
   droppingFish: {
     position: 'absolute',
     left: '50%',
-    marginLeft: -100,
-    width: 200,
-    height: 200,
+    marginLeft: -75,
+    width: 150,
+    height: 150,
     zIndex: 1001,
   },
   droppingFishImage: {
