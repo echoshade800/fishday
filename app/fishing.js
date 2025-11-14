@@ -90,6 +90,7 @@ export default function FishingScreen() {
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
   const rotationAnimationRef = useRef(null);
+  const isPausedRef = useRef(false);
   const fishDropY = useRef(new Animated.Value(-300)).current;
   const fishFloatY = useRef(new Animated.Value(0)).current;
 
@@ -523,23 +524,26 @@ export default function FishingScreen() {
     console.log('Starting pointer rotation...');
     pointerRotation.setValue(0);
     currentRotationRef.current = 0;
+    isPausedRef.current = false;
 
-    const rotationAnimation = Animated.loop(
-      Animated.timing(pointerRotation, {
-        toValue: 360,
-        duration: 2000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      })
-    );
+    const createRotationLoop = () => {
+      return Animated.loop(
+        Animated.timing(pointerRotation, {
+          toValue: 360,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        })
+      );
+    };
 
     pointerRotation.addListener(({ value }) => {
-      currentRotationRef.current = value % 360;
-      if (Math.floor(value) % 90 === 0) {
-        console.log('Rotation value:', value);
+      if (!isPausedRef.current) {
+        currentRotationRef.current = value % 360;
       }
     });
 
+    const rotationAnimation = createRotationLoop();
     rotationAnimation.start();
     rotationAnimationRef.current = rotationAnimation;
     console.log('Rotation animation started');
@@ -655,32 +659,44 @@ export default function FishingScreen() {
     if (gamePhase === 'reeling') {
       if (showPauseMenu) {
         // Pause the rotation animation
+        isPausedRef.current = true;
         if (rotationAnimationRef.current) {
-          rotationAnimationRef.current.stop();
+          pointerRotation.stopAnimation((value) => {
+            // Save the exact position where we paused
+            const normalizedValue = value % 360;
+            currentRotationRef.current = normalizedValue;
+            pointerRotation.setValue(normalizedValue);
+          });
         }
-      } else {
-        // Resume the rotation animation by restarting it
-        if (rotationAnimationRef.current) {
-          rotationAnimationRef.current.stop();
-        }
+      } else if (isPausedRef.current) {
+        // Resume from the paused position
+        isPausedRef.current = false;
 
-        // Restart the rotation animation
-        const rotationAnimation = Animated.loop(
+        // Calculate the remaining distance to complete a full rotation
+        const currentValue = currentRotationRef.current;
+        const targetValue = currentValue + 360;
+
+        // Calculate the duration proportionally
+        const fullDuration = 2000;
+
+        // Create a seamless loop animation from current position
+        const resumeAnimation = Animated.loop(
           Animated.timing(pointerRotation, {
-            toValue: currentRotationRef.current + 360,
-            duration: 2000,
+            toValue: targetValue,
+            duration: fullDuration,
             easing: Easing.linear,
             useNativeDriver: false,
           })
         );
 
-        rotationAnimation.start();
-        rotationAnimationRef.current = rotationAnimation;
+        resumeAnimation.start();
+        rotationAnimationRef.current = resumeAnimation;
       }
     }
 
     return () => {
       if (rotationAnimationRef.current && gamePhase !== 'reeling') {
+        isPausedRef.current = false;
         rotationAnimationRef.current.stop();
       }
     };
