@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/homebackground.png' }}
+      source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/homebackground.png' }}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
