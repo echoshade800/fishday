@@ -18,7 +18,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SEA_AREA_TOP = SCREEN_HEIGHT * 0.1;
 const SEA_AREA_BOTTOM = SCREEN_HEIGHT * 0.55;
 const CHARACTER_X = SCREEN_WIDTH * 0.5;
-const CHARACTER_Y = SCREEN_HEIGHT * 0.65 - 50;
+const CHARACTER_Y = SCREEN_HEIGHT * 0.65;
 const NUM_FISH = 10;
 
 const createSwimmingFish = (index) => {
