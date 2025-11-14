@@ -65,6 +65,7 @@ export default function FishingScreen() {
   const [caughtFish, setCaughtFish] = useState(null);
   const [isNewFish, setIsNewFish] = useState(false);
   const [remainingTime, setRemainingTime] = useState(90);
+  const [isPaused, setIsPaused] = useState(false);
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
@@ -525,6 +526,7 @@ export default function FishingScreen() {
     setReelingSuccessCount(0);
     setReelingFailCount(0);
     setRemainingTime(90);
+    setIsPaused(false);
     generateNewTargetZone();
     startPointerRotation();
 
@@ -707,6 +709,8 @@ export default function FishingScreen() {
 
       // Pause the reeling timer
       if (gamePhase === 'reeling') {
+        setIsPaused(true);
+
         // Clear timeout
         if (reelingTimeoutRef.current) {
           clearTimeout(reelingTimeoutRef.current);
@@ -719,14 +723,18 @@ export default function FishingScreen() {
           reelingIntervalRef.current = null;
         }
 
-        // Calculate elapsed time
+        // Calculate elapsed time and update display immediately
         if (reelingStartTimeRef.current) {
           reelingElapsedTimeRef.current += Date.now() - reelingStartTimeRef.current;
+          const remaining = Math.max(0, Math.ceil((90000 - reelingElapsedTimeRef.current) / 1000));
+          setRemainingTime(remaining);
         }
       }
     } else {
       // Resume the rotation animation only if in reeling phase
-      if (gamePhase === 'reeling') {
+      if (gamePhase === 'reeling' && isPaused) {
+        setIsPaused(false);
+
         // Re-create and start the animation
         startPointerRotation();
 
