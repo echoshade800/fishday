@@ -93,7 +93,7 @@ export default function HomeScreen() {
 
                 <TouchableOpacity
                   style={styles.navButton}
-                  onPress={() => router.push('/profile')}
+                  onPress={() => router.push('/settings')}
                   activeOpacity={0.8}
                 >
                   <Settings size={32} color="#0891B2" strokeWidth={2.5} />
