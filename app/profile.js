@@ -1,7 +1,6 @@
 /**
- * Profile & Settings Screen
- * Purpose: User profile, settings, and preferences
- * Extension: Add avatar upload, theme customization, data export
+ * Settings Screen
+ * Purpose: User preferences for sound and vibration
  */
 
 import React, { useState } from 'react';
@@ -11,12 +10,11 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '../store/gameStore';
 import Card from '../components/Card';
-import { renderStars } from '../constants/fishData';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { settings, updateSettings, maxScore, maxLevel, bestTime } = useGameStore();
+  const { settings, updateSettings } = useGameStore();
 
   const [localSettings, setLocalSettings] = useState(settings);
 
@@ -39,33 +37,6 @@ export default function ProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.content}>
-            <Card style={styles.profileCard}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>🎣</Text>
-              </View>
-              <Text style={styles.username}>Angler</Text>
-            </Card>
-
-            <Card style={styles.statsCard}>
-              <Text style={styles.sectionTitle}>Statistics</Text>
-              <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Species Collected</Text>
-                <Text style={styles.statValue}>{maxScore}/16</Text>
-              </View>
-              <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Best Rarity</Text>
-                <Text style={styles.statValue}>
-                  {maxLevel > 0 ? renderStars(maxLevel) : 'None yet'}
-                </Text>
-              </View>
-              <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Best Hook Time</Text>
-                <Text style={styles.statValue}>
-                  {bestTime !== Infinity ? `${(bestTime / 1000).toFixed(2)}s` : 'N/A'}
-                </Text>
-              </View>
-            </Card>
-
             <Card style={styles.settingsCard}>
               <Text style={styles.sectionTitle}>Settings</Text>
 
@@ -88,43 +59,6 @@ export default function ProfileScreen() {
                   thumbColor="#FFFFFF"
                 />
               </View>
-
-              <View style={styles.settingRow}>
-                <Text style={styles.settingLabel}>Left-Hand Mode</Text>
-                <Switch
-                  value={localSettings.leftHandMode}
-                  onValueChange={(value) => handleToggleSetting('leftHandMode', value)}
-                  trackColor={{ false: '#CBD5E1', true: '#0891B2' }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
-            </Card>
-
-            <View style={styles.links}>
-              <TouchableOpacity
-                style={styles.linkButton}
-                onPress={() => router.push('/encyclopedia')}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.linkText}>📚 View Encyclopedia</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.linkButton}
-                onPress={() => router.push('/about')}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.linkText}>ℹ️ About & Help</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Card style={styles.debugCard}>
-              <Text style={styles.debugTitle}>Debug Info (Dev Only)</Text>
-              <Text style={styles.debugText}>maxLevel: {maxLevel}</Text>
-              <Text style={styles.debugText}>maxScore: {maxScore}</Text>
-              <Text style={styles.debugText}>
-                bestTime: {bestTime !== Infinity ? bestTime : 'N/A'}
-              </Text>
             </Card>
           </View>
         </ScrollView>
@@ -157,54 +91,13 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
   },
-  profileCard: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#E0F2FE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    fontSize: 40,
-  },
-  username: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0F172A',
-  },
-  statsCard: {
+  settingsCard: {
     marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#0F172A',
-    marginBottom: 16,
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  statLabel: {
-    fontSize: 16,
-    color: '#64748B',
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#0891B2',
-  },
-  settingsCard: {
     marginBottom: 16,
   },
   settingRow: {
@@ -218,35 +111,5 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     color: '#0F172A',
-  },
-  links: {
-    gap: 8,
-    marginBottom: 16,
-  },
-  linkButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  linkText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#0891B2',
-  },
-  debugCard: {
-    backgroundColor: '#F1F5F9',
-    marginBottom: 20,
-  },
-  debugTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#64748B',
-    marginBottom: 8,
-  },
-  debugText: {
-    fontSize: 12,
-    color: '#94A3B8',
-    marginBottom: 4,
   },
 });
