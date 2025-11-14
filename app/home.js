@@ -9,7 +9,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../store/gameStore';
-import { BookOpen, User } from 'lucide-react-native';
+import { BookOpen, Settings } from 'lucide-react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -96,8 +96,8 @@ export default function HomeScreen() {
                   onPress={() => router.push('/profile')}
                   activeOpacity={0.8}
                 >
-                  <User size={32} color="#0891B2" strokeWidth={2.5} />
-                  <Text style={styles.navButtonText}>Profile</Text>
+                  <Settings size={32} color="#0891B2" strokeWidth={2.5} />
+                  <Text style={styles.navButtonText}>Settings</Text>
                 </TouchableOpacity>
               </View>
             </View>
