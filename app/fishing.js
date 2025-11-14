@@ -706,9 +706,12 @@ export default function FishingScreen() {
       }
 
       // Pause the reeling timer
-      if (gamePhase === 'reeling' && reelingTimeoutRef.current) {
-        clearTimeout(reelingTimeoutRef.current);
-        reelingTimeoutRef.current = null;
+      if (gamePhase === 'reeling') {
+        // Clear timeout
+        if (reelingTimeoutRef.current) {
+          clearTimeout(reelingTimeoutRef.current);
+          reelingTimeoutRef.current = null;
+        }
 
         // Clear countdown interval
         if (reelingIntervalRef.current) {
