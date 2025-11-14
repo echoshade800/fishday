@@ -109,7 +109,7 @@ export default function HomeScreen() {
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Tries Limited</Text>
-                <Text style={styles.statValue}>{remainingTries}/3</Text>
+                <Text style={styles.statValue}>{remainingTries}/5</Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Collected</Text>
