@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, PanResponder, Easing } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, ImageBackground, PanResponder, Easing } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
@@ -1024,7 +1024,11 @@ export default function FishingScreen() {
                   },
                 ]}
               >
-                <View style={styles.pointerTriangle} />
+                <Image
+                  source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/pointer.png' }}
+                  style={styles.pointerImage}
+                  resizeMode="contain"
+                />
               </Animated.View>
 
               <TouchableOpacity
@@ -1609,26 +1613,17 @@ const styles = StyleSheet.create({
   },
   pointer: {
     position: 'absolute',
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
     top: '50%',
     left: '50%',
-    marginLeft: -10,
-    marginTop: -10,
+    marginLeft: -20,
+    marginTop: -20,
     zIndex: 10,
   },
-  pointerTriangle: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
-    borderBottomWidth: 20,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#EF4444',
-    marginLeft: -10,
+  pointerImage: {
+    width: 40,
+    height: 40,
   },
   reelingButton: {
     position: 'absolute',
