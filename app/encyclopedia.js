@@ -5,10 +5,11 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft } from 'lucide-react-native';
 import { FISH_DATA } from '../constants/fishData';
 import FishCard from '../components/FishCard';
 
@@ -41,6 +42,13 @@ export default function EncyclopediaScreen() {
     <LinearGradient colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']} style={styles.gradient}>
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push('/home')}
+            activeOpacity={0.7}
+          >
+            <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
+          </TouchableOpacity>
           <Text style={styles.title}>Fish Encyclopedia</Text>
           <Text style={styles.subtitle}>{filteredFish.length} species</Text>
         </View>
@@ -108,6 +116,10 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingBottom: 12,
+  },
+  backButton: {
+    marginBottom: 12,
+    alignSelf: 'flex-start',
   },
   title: {
     fontSize: 28,
