@@ -1386,7 +1386,7 @@ export default function FishingScreen() {
               <Text style={[
                 styles.successButtonText,
                 getRemainingTries() === 0 && styles.disabledButtonText
-              ]}>Restart</Text>
+              ]}>Try Again</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.successButton, styles.homeButton]}
@@ -1531,7 +1531,7 @@ export default function FishingScreen() {
                     onPress={handleRestart}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.confirmButtonText}>Restart</Text>
+                    <Text style={styles.confirmButtonText}>Try Again</Text>
                   </TouchableOpacity>
                 </>
               ) : (
