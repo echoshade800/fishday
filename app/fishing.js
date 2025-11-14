@@ -579,6 +579,12 @@ export default function FishingScreen() {
         }),
         Animated.timing(fishFloatY, {
           toValue: 15,
+          duration: 3000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+        Animated.timing(fishFloatY, {
+          toValue: 0,
           duration: 1500,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: false,
