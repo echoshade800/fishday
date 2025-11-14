@@ -1511,11 +1511,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   pauseHomeButton: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#64748B',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#EF4444',
+    shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
