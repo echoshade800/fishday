@@ -188,7 +188,20 @@ export default function FishingScreen() {
   }, [isDragging]);
 
   useEffect(() => {
-    loadSuccessSound();
+    const setupAudio = async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: false,
+          shouldDuckAndroid: true,
+        });
+        await loadSuccessSound();
+      } catch (error) {
+        console.log('Failed to setup audio:', error);
+      }
+    };
+    setupAudio();
+
     return () => {
       if (successSoundRef.current) {
         successSoundRef.current.unloadAsync();
@@ -198,24 +211,31 @@ export default function FishingScreen() {
 
   const loadSuccessSound = async () => {
     try {
+      console.log('Loading success sound...');
       const { sound } = await Audio.Sound.createAsync(
         { uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/ocean.MP3' },
         { shouldPlay: false }
       );
       successSoundRef.current = sound;
+      console.log('Success sound loaded successfully');
     } catch (error) {
       console.log('Failed to load success sound:', error);
     }
   };
 
   const playSuccessSound = async () => {
+    console.log('playSuccessSound called, soundEnabled:', soundEnabled, 'soundRef exists:', !!successSoundRef.current);
     if (soundEnabled && successSoundRef.current) {
       try {
+        console.log('Playing success sound...');
         await successSoundRef.current.setPositionAsync(0);
         await successSoundRef.current.playAsync();
+        console.log('Success sound played');
       } catch (error) {
         console.log('Failed to play success sound:', error);
       }
+    } else {
+      console.log('Sound not played - soundEnabled:', soundEnabled, 'sound exists:', !!successSoundRef.current);
     }
   };
 
