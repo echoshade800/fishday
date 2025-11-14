@@ -87,6 +87,7 @@ export default function FishingScreen() {
 
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
+  const rotationAnimationRef = useRef(null);
   const fishDropY = useRef(new Animated.Value(-300)).current;
   const fishFloatY = useRef(new Animated.Value(0)).current;
 
@@ -537,6 +538,7 @@ export default function FishingScreen() {
     });
 
     rotationAnimation.start();
+    rotationAnimationRef.current = rotationAnimation;
     console.log('Rotation animation started');
     return rotationAnimation;
   };
@@ -640,6 +642,21 @@ export default function FishingScreen() {
   const handleEncyclopedia = () => {
     router.push('/encyclopedia?fromSuccess=true');
   };
+
+  // Handle pause menu - stop/resume pointer rotation
+  useEffect(() => {
+    if (showPauseMenu) {
+      // Pause the rotation animation
+      if (rotationAnimationRef.current) {
+        rotationAnimationRef.current.stop();
+      }
+    } else {
+      // Resume the rotation animation only if in reeling phase
+      if (gamePhase === 'reeling' && rotationAnimationRef.current) {
+        rotationAnimationRef.current.start();
+      }
+    }
+  }, [showPauseMenu, gamePhase]);
 
   return (
     <View style={styles.container}>
