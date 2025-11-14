@@ -68,36 +68,38 @@ export default function HomeScreen() {
             </View>
 
             {/* Main action button */}
-            <TouchableOpacity
-              style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
-              onPress={handleStartFishing}
-              disabled={!canFish}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.mainButtonText}>
-                {canFish ? '▶ Go to Fish' : 'Out of Tries'}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Navigation buttons */}
-            <View style={styles.navButtonRow}>
+            <View style={styles.actionContainer}>
               <TouchableOpacity
-                style={styles.navButton}
-                onPress={() => router.push('/encyclopedia')}
+                style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
+                onPress={handleStartFishing}
+                disabled={!canFish}
                 activeOpacity={0.8}
               >
-                <BookOpen size={32} color="#0891B2" strokeWidth={2.5} />
-                <Text style={styles.navButtonText}>Fish Book</Text>
+                <Text style={styles.mainButtonText}>
+                  {canFish ? '▶ Go to Fish' : 'Out of Tries'}
+                </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.navButton}
-                onPress={() => router.push('/profile')}
-                activeOpacity={0.8}
-              >
-                <User size={32} color="#0891B2" strokeWidth={2.5} />
-                <Text style={styles.navButtonText}>Profile</Text>
-              </TouchableOpacity>
+              {/* Navigation buttons */}
+              <View style={styles.navButtonRow}>
+                <TouchableOpacity
+                  style={styles.navButton}
+                  onPress={() => router.push('/encyclopedia')}
+                  activeOpacity={0.8}
+                >
+                  <BookOpen size={32} color="#0891B2" strokeWidth={2.5} />
+                  <Text style={styles.navButtonText}>Fish Book</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.navButton}
+                  onPress={() => router.push('/profile')}
+                  activeOpacity={0.8}
+                >
+                  <User size={32} color="#0891B2" strokeWidth={2.5} />
+                  <Text style={styles.navButtonText}>Profile</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -169,6 +171,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+  },
+  actionContainer: {
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
   },
   mainButton: {
     width: '65%',
