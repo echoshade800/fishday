@@ -44,7 +44,7 @@ const createSwimmingFish = (index) => {
 
 export default function FishingScreen() {
   const router = useRouter();
-  const { addCatch } = useGameStore();
+  const { addCatch, catches } = useGameStore();
 
   const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
@@ -61,6 +61,7 @@ export default function FishingScreen() {
   const [targetZoneStart, setTargetZoneStart] = useState(0);
   const [targetZoneEnd, setTargetZoneEnd] = useState(60);
   const [caughtFish, setCaughtFish] = useState(null);
+  const [isNewFish, setIsNewFish] = useState(false);
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
@@ -550,6 +551,11 @@ export default function FishingScreen() {
         const fish = getRandomFish();
         console.log('Caught fish:', fish);
         console.log('Fish image URL:', fish.imagePlaceholderUrl);
+
+        // Check if this fish is new (not caught before)
+        const isNew = !catches.some(c => c.fishId === fish.id);
+        setIsNewFish(isNew);
+
         setCaughtFish(fish);
         setGamePhase('success');
         pointerRotation.stopAnimation();
@@ -1064,6 +1070,21 @@ export default function FishingScreen() {
 
           {/* Fish Info Card */}
           <View style={styles.fishInfoCard}>
+            {/* NEW or AGAIN Badge */}
+            {isNewFish ? (
+              <Image
+                source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/NEW.png' }}
+                style={styles.badgeNew}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/AGAIN.png' }}
+                style={styles.badgeAgain}
+                resizeMode="contain"
+              />
+            )}
+
             <ExpoLinearGradient
               colors={['#FF6B6B', '#FFD93D', '#6BCF7F', '#4ECDC4', '#95E1D3', '#A78BFA', '#EC4899']}
               start={{ x: 0, y: 0 }}
@@ -1696,6 +1717,23 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
     zIndex: 1002,
+    overflow: 'visible',
+  },
+  badgeNew: {
+    position: 'absolute',
+    top: -15,
+    left: -15,
+    width: 60,
+    height: 60,
+    zIndex: 1,
+  },
+  badgeAgain: {
+    position: 'absolute',
+    bottom: -15,
+    right: -15,
+    width: 60,
+    height: 60,
+    zIndex: 1,
   },
   fishImageCircle: {
     width: 80,
