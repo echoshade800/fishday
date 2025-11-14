@@ -683,7 +683,7 @@ export default function FishingScreen() {
     setTimeout(() => {
       // Fish drops down
       Animated.spring(fishDropY, {
-        toValue: SCREEN_HEIGHT * 0.35,
+        toValue: SCREEN_HEIGHT * 0.35 - 10,
         tension: 20,
         friction: 7,
         useNativeDriver: false,
