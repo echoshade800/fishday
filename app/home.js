@@ -112,8 +112,8 @@ export default function HomeScreen() {
               <Text style={styles.statValue}>{remainingTries}/3</Text>
             </View>
             <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Best Rarity</Text>
-              <Text style={styles.statValue}>{maxLevel}/5</Text>
+              <Text style={styles.statLabel}>Collected</Text>
+              <Text style={styles.statValue}>{maxScore}/16</Text>
             </View>
           </View>
 
