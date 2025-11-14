@@ -5,10 +5,9 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft } from 'lucide-react-native';
 import { FISH_DATA } from '../constants/fishData';
 import FishCard from '../components/FishCard';
@@ -22,7 +21,11 @@ export default function EncyclopediaScreen() {
   };
 
   return (
-    <LinearGradient colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']} style={styles.gradient}>
+    <ImageBackground
+      source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/bookbackground.png' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -48,12 +51,12 @@ export default function EncyclopediaScreen() {
             columnWrapperStyle={styles.row}
           />
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
+  background: {
     flex: 1,
   },
   container: {
