@@ -74,7 +74,7 @@ export default function HomeScreen() {
               activeOpacity={0.8}
             >
               <Text style={styles.mainButtonText}>
-                ▶ {canFish ? 'PLAY' : 'OUT OF TRIES'}
+                {canFish ? 'Go to Fish' : 'Out of Tries'}
               </Text>
             </TouchableOpacity>
 
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   mainButton: {
     width: '80%',
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#0891B2',
     paddingVertical: 20,
     borderRadius: 30,
     marginBottom: 32,
