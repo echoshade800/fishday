@@ -5,7 +5,8 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, ImageBackground, PanResponder, Easing } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, ImageBackground, PanResponder, Easing, Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Pause, Fish as FishIcon, Volume2, VolumeX, Vibrate } from 'lucide-react-native';
@@ -595,6 +596,11 @@ export default function FishingScreen() {
     if (isInTarget) {
       const newSuccessCount = reelingSuccessCount + 1;
       setReelingSuccessCount(newSuccessCount);
+
+      // Trigger strong haptic feedback on successful tap
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      }
 
       if (newSuccessCount >= 3) {
         // Clear reeling timeout and interval
