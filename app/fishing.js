@@ -64,11 +64,9 @@ export default function FishingScreen() {
   const [targetZoneEnd, setTargetZoneEnd] = useState(60);
   const [caughtFish, setCaughtFish] = useState(null);
   const [isNewFish, setIsNewFish] = useState(false);
-  const [reelingTimeLeft, setReelingTimeLeft] = useState(90);
 
   const bitingTimeoutRef = useRef(null);
   const waitingTimeoutRef = useRef(null);
-  const reelingTimerRef = useRef(null);
 
   const dragButtonScale = useRef(new Animated.Value(1)).current;
   const dragButtonY = useRef(new Animated.Value(0)).current;
@@ -90,7 +88,6 @@ export default function FishingScreen() {
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
   const rotationAnimationRef = useRef(null);
-  const isPausedRef = useRef(false);
   const fishDropY = useRef(new Animated.Value(-300)).current;
   const fishFloatY = useRef(new Animated.Value(0)).current;
 
@@ -508,7 +505,6 @@ export default function FishingScreen() {
     setGamePhase('reeling');
     setReelingSuccessCount(0);
     setReelingFailCount(0);
-    setReelingTimeLeft(90);
     generateNewTargetZone();
     startPointerRotation();
   };
@@ -522,45 +518,28 @@ export default function FishingScreen() {
 
   const startPointerRotation = () => {
     console.log('Starting pointer rotation...');
-
-    // Stop any existing animation
-    if (rotationAnimationRef.current) {
-      rotationAnimationRef.current.stop();
-      rotationAnimationRef.current = null;
-    }
-
-    // Clean up any existing listeners
-    pointerRotation.removeAllListeners();
-
-    // Reset to 0
     pointerRotation.setValue(0);
     currentRotationRef.current = 0;
-    isPausedRef.current = false;
 
-    // Add listener to track rotation value
-    const listenerId = pointerRotation.addListener(({ value }) => {
-      if (!isPausedRef.current) {
-        currentRotationRef.current = value % 360;
-      }
-    });
-    console.log('Listener added:', listenerId);
-
-    // Start infinite rotation loop
     const rotationAnimation = Animated.loop(
       Animated.timing(pointerRotation, {
         toValue: 360,
         duration: 2000,
         easing: Easing.linear,
         useNativeDriver: false,
-      }),
-      {
-        resetBeforeIteration: true
-      }
+      })
     );
+
+    pointerRotation.addListener(({ value }) => {
+      currentRotationRef.current = value % 360;
+      if (Math.floor(value) % 90 === 0) {
+        console.log('Rotation value:', value);
+      }
+    });
 
     rotationAnimation.start();
     rotationAnimationRef.current = rotationAnimation;
-    console.log('Rotation animation started, initial value:', pointerRotation._value);
+    console.log('Rotation animation started');
     return rotationAnimation;
   };
 
@@ -573,11 +552,6 @@ export default function FishingScreen() {
       setReelingSuccessCount(newSuccessCount);
 
       if (newSuccessCount >= 3) {
-        if (reelingTimerRef.current) {
-          clearInterval(reelingTimerRef.current);
-          reelingTimerRef.current = null;
-        }
-
         const fish = getRandomFish();
         console.log('Caught fish:', fish);
         console.log('Fish image URL:', fish.imagePlaceholderUrl);
@@ -600,11 +574,6 @@ export default function FishingScreen() {
       setReelingFailCount(newFailCount);
 
       if (newFailCount >= 2) {
-        if (reelingTimerRef.current) {
-          clearInterval(reelingTimerRef.current);
-          reelingTimerRef.current = null;
-        }
-
         setGamePhase('fail');
         pointerRotation.stopAnimation();
         pointerRotation.removeAllListeners();
@@ -670,99 +639,18 @@ export default function FishingScreen() {
 
   // Handle pause menu - stop/resume pointer rotation
   useEffect(() => {
-    console.log('Pause effect triggered - gamePhase:', gamePhase, 'showPauseMenu:', showPauseMenu, 'isPaused:', isPausedRef.current);
-
-    if (gamePhase === 'reeling' && !showPauseMenu && isPausedRef.current) {
-      // Resume rotation when unpausing
-      console.log('=== RESUMING ROTATION ===');
-      isPausedRef.current = false;
-
-      // Get current value
-      const currentValue = pointerRotation._value % 360;
-      console.log('Resuming from rotation value:', currentValue);
-
-      // Set to normalized value
-      pointerRotation.setValue(currentValue);
-
-      // Re-add the listener for tracking rotation
-      pointerRotation.removeAllListeners();
-      pointerRotation.addListener(({ value }) => {
-        if (!isPausedRef.current) {
-          currentRotationRef.current = value % 360;
-        }
-      });
-
-      // Create infinite loop from current position
-      const rotationAnimation = Animated.loop(
-        Animated.timing(pointerRotation, {
-          toValue: currentValue + 360,
-          duration: 2000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-        {
-          resetBeforeIteration: true
-        }
-      );
-
-      rotationAnimation.start();
-      rotationAnimationRef.current = rotationAnimation;
-      console.log('=== ROTATION RESUMED ===');
-    } else if (gamePhase === 'reeling' && showPauseMenu && !isPausedRef.current) {
-      // Pause the rotation
-      console.log('=== PAUSING ROTATION ===');
-      isPausedRef.current = true;
+    if (showPauseMenu) {
+      // Pause the rotation animation
       if (rotationAnimationRef.current) {
-        pointerRotation.stopAnimation((value) => {
-          const normalizedValue = value % 360;
-          currentRotationRef.current = normalizedValue;
-          pointerRotation.setValue(normalizedValue);
-          console.log('Paused at rotation:', normalizedValue);
-        });
-      }
-      console.log('=== ROTATION PAUSED ===');
-    }
-
-    return () => {
-      if (gamePhase !== 'reeling' && rotationAnimationRef.current) {
-        console.log('Cleaning up rotation animation');
-        isPausedRef.current = false;
         rotationAnimationRef.current.stop();
-        rotationAnimationRef.current = null;
       }
-    };
-  }, [showPauseMenu, gamePhase]);
-
-  // Handle reeling timer - 90 second countdown
-  useEffect(() => {
-    if (gamePhase === 'reeling' && !showPauseMenu) {
-      reelingTimerRef.current = setInterval(() => {
-        setReelingTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(reelingTimerRef.current);
-            setReelingFailCount(3);
-            setGamePhase('fail');
-            pointerRotation.stopAnimation();
-            pointerRotation.removeAllListeners();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } else {
-      if (reelingTimerRef.current) {
-        clearInterval(reelingTimerRef.current);
-        reelingTimerRef.current = null;
+      // Resume the rotation animation only if in reeling phase
+      if (gamePhase === 'reeling' && rotationAnimationRef.current) {
+        rotationAnimationRef.current.start();
       }
     }
-
-    return () => {
-      if (reelingTimerRef.current) {
-        clearInterval(reelingTimerRef.current);
-        reelingTimerRef.current = null;
-      }
-    };
-  }, [gamePhase, showPauseMenu]);
+  }, [showPauseMenu, gamePhase]);
 
   return (
     <View style={styles.container}>
@@ -1169,9 +1057,6 @@ export default function FishingScreen() {
             <View style={styles.reelingProgressContainer}>
               <Text style={styles.reelingProgress}>
                 Success: {reelingSuccessCount}/3  Fails: {reelingFailCount}/2
-              </Text>
-              <Text style={styles.reelingTimer}>
-                Time: {reelingTimeLeft}s
               </Text>
             </View>
           </View>
@@ -1884,12 +1769,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: '#1E293B',
-  },
-  reelingTimer: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#DC2626',
-    marginTop: 4,
   },
   circleContainer: {
     width: 200,
