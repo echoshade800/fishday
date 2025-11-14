@@ -830,7 +830,7 @@ export default function FishingScreen() {
       {/* Exclamation Mark */}
       {(gamePhase === 'biting') && (
         <Animated.Image
-          source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/Exclamationmark.png' }}
+          source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/20251114145010.png' }}
           style={[
             styles.exclamationMark,
             {
