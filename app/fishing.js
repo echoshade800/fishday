@@ -1212,21 +1212,21 @@ export default function FishingScreen() {
             {/* Action Buttons */}
             <View style={styles.pauseButtons}>
               <TouchableOpacity
-                style={[styles.pauseButton, styles.resumeButton]}
+                style={styles.resumeButton}
                 onPress={() => setShowPauseMenu(false)}
                 activeOpacity={0.8}
               >
                 <Text style={styles.resumeButtonText}>Resume</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.pauseButton, styles.homeButton]}
+                style={styles.pauseHomeButton}
                 onPress={() => {
                   setShowPauseMenu(false);
                   router.push('/home');
                 }}
                 activeOpacity={0.8}
               >
-                <Text style={styles.homeButtonText}>Home</Text>
+                <Text style={styles.pauseHomeButtonText}>Home</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1510,7 +1510,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
   },
-  homeButton: {
+  pauseHomeButton: {
     backgroundColor: '#EF4444',
     paddingVertical: 14,
     borderRadius: 12,
@@ -1521,7 +1521,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  homeButtonText: {
+  pauseHomeButtonText: {
     fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
