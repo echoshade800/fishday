@@ -662,7 +662,7 @@ export default function FishingScreen() {
     <View style={styles.container}>
       {/* Background Image */}
       <Image
-        source={{ uri: 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/gamebackground.jpg' }}
+        source={{ uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/gamebackground1.jpeg' }}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
