@@ -3,23 +3,42 @@
  * Contains all fish species with names, rarity, and placeholder images
  */
 
+export const FISH_IMAGES = {
+  'Capelin': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/Capelin.png',
+  'Violet Scaled Fish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/VioletScaledFish.png',
+  'Blueback Wrasse': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/BluebackWrasse.png',
+  'Purple Sandtip Fish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/PurpleSandtipFish.png',
+  'Large Prawns': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/largeprawns.png',
+  'Pearl Capelin': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/PearlCapelin.png',
+  'Starry Sparrowtail Fish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/StarrySparrowtailFish.png',
+  'Black Tiger Shrimp': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/BlackTigerShrimp.png',
+  'Golden Bream': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/GoldenBream.png',
+  'Dream Fairyfish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/DreamFairyfish.png',
+  'Bluefin Flower Fish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/BluefinFlowerFish.png',
+  'Bluefin Fish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/BluefinFish.png',
+  'Mullet': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/Mullet.png',
+  'Blue Moon Squid': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/BlueMoonSquid.png',
+  'Giant Sailfish': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/GiantSailfish.png',
+  'Seabream': 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/fishphoto/Seabream.png',
+};
+
 export const FISH_DATA = [
-  { id: 1, name: 'Starry Sparrowtail Fish', rarity: 4, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=Starry+Sparrowtail' },
-  { id: 2, name: 'Purple Sandtip Fish', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/9B59B6/FFFFFF?text=Purple+Sandtip' },
-  { id: 3, name: 'Bluefin Flower Fish', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/3498DB/FFFFFF?text=Bluefin+Flower' },
-  { id: 4, name: 'Blueback Wrasse', rarity: 2, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/5DADE2/FFFFFF?text=Blueback+Wrasse' },
-  { id: 5, name: 'Blue Moon Squid', rarity: 5, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/1E3A8A/FFFFFF?text=Blue+Moon+Squid' },
-  { id: 6, name: 'Giant Sailfish', rarity: 5, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/0C4A6E/FFFFFF?text=Giant+Sailfish' },
-  { id: 7, name: 'Dream Fairyfish', rarity: 4, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/EC4899/FFFFFF?text=Dream+Fairyfish' },
-  { id: 8, name: 'Capelin', rarity: 2, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/94A3B8/FFFFFF?text=Capelin' },
-  { id: 9, name: 'Mullet', rarity: 2, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/64748B/FFFFFF?text=Mullet' },
-  { id: 10, name: 'Bluefin Fish', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/2563EB/FFFFFF?text=Bluefin+Fish' },
-  { id: 11, name: 'Black Tiger Shrimp', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/DC2626/FFFFFF?text=Black+Tiger+Shrimp' },
-  { id: 12, name: 'Seabream', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/F59E0B/FFFFFF?text=Seabream' },
-  { id: 13, name: 'Golden Bream', rarity: 4, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/FCD34D/FFFFFF?text=Golden+Bream' },
-  { id: 14, name: 'Pearl Capelin', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/E0E7FF/FFFFFF?text=Pearl+Capelin' },
-  { id: 15, name: 'Violet Scaled Fish', rarity: 3, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/8B5CF6/FFFFFF?text=Violet+Scaled' },
-  { id: 16, name: 'Large Prawns', rarity: 2, imagePlaceholderUrl: 'https://via.placeholder.com/300x200/F97316/FFFFFF?text=Large+Prawns' },
+  { id: 1, name: 'Starry Sparrowtail Fish', rarity: 4, imagePlaceholderUrl: FISH_IMAGES['Starry Sparrowtail Fish'] },
+  { id: 2, name: 'Purple Sandtip Fish', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Purple Sandtip Fish'] },
+  { id: 3, name: 'Bluefin Flower Fish', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Bluefin Flower Fish'] },
+  { id: 4, name: 'Blueback Wrasse', rarity: 2, imagePlaceholderUrl: FISH_IMAGES['Blueback Wrasse'] },
+  { id: 5, name: 'Blue Moon Squid', rarity: 5, imagePlaceholderUrl: FISH_IMAGES['Blue Moon Squid'] },
+  { id: 6, name: 'Giant Sailfish', rarity: 5, imagePlaceholderUrl: FISH_IMAGES['Giant Sailfish'] },
+  { id: 7, name: 'Dream Fairyfish', rarity: 4, imagePlaceholderUrl: FISH_IMAGES['Dream Fairyfish'] },
+  { id: 8, name: 'Capelin', rarity: 2, imagePlaceholderUrl: FISH_IMAGES['Capelin'] },
+  { id: 9, name: 'Mullet', rarity: 2, imagePlaceholderUrl: FISH_IMAGES['Mullet'] },
+  { id: 10, name: 'Bluefin Fish', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Bluefin Fish'] },
+  { id: 11, name: 'Black Tiger Shrimp', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Black Tiger Shrimp'] },
+  { id: 12, name: 'Seabream', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Seabream'] },
+  { id: 13, name: 'Golden Bream', rarity: 4, imagePlaceholderUrl: FISH_IMAGES['Golden Bream'] },
+  { id: 14, name: 'Pearl Capelin', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Pearl Capelin'] },
+  { id: 15, name: 'Violet Scaled Fish', rarity: 3, imagePlaceholderUrl: FISH_IMAGES['Violet Scaled Fish'] },
+  { id: 16, name: 'Large Prawns', rarity: 2, imagePlaceholderUrl: FISH_IMAGES['Large Prawns'] },
 ];
 
 // Helper to get fish by rarity
