@@ -1182,7 +1182,7 @@ const styles = StyleSheet.create({
     top: -50,
     left: 0,
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    height: SCREEN_HEIGHT + 50,
   },
   arcSvg: {
     position: 'absolute',
