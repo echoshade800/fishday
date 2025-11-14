@@ -83,7 +83,7 @@ export default function FishingScreen() {
 
   const pointerRotation = useRef(new Animated.Value(0)).current;
   const currentRotationRef = useRef(0);
-  const fishDropY = useRef(new Animated.Value(-200)).current;
+  const fishDropY = useRef(new Animated.Value(-300)).current;
   const fishFloatY = useRef(new Animated.Value(0)).current;
 
   const swimmingFish = useMemo(() => {
@@ -594,10 +594,10 @@ export default function FishingScreen() {
   };
 
   const startFishDropAnimation = () => {
-    fishDropY.setValue(-200);
+    fishDropY.setValue(-300);
     fishFloatY.setValue(0);
     Animated.spring(fishDropY, {
-      toValue: SCREEN_HEIGHT * 0.3,
+      toValue: SCREEN_HEIGHT * 0.35,
       tension: 20,
       friction: 7,
       useNativeDriver: false,
@@ -611,7 +611,7 @@ export default function FishingScreen() {
     pointerRotation.removeAllListeners();
     fishDropY.stopAnimation();
     fishFloatY.stopAnimation();
-    fishDropY.setValue(-200);
+    fishDropY.setValue(-300);
     fishFloatY.setValue(0);
     setGamePhase('ready');
     setReelingSuccessCount(0);
@@ -1046,7 +1046,7 @@ export default function FishingScreen() {
             style={[
               styles.droppingFish,
               {
-                top: Animated.add(fishDropY, fishFloatY),
+                transform: [{ translateY: Animated.add(fishDropY, fishFloatY) }],
               },
             ]}
           >
@@ -1657,6 +1657,7 @@ const styles = StyleSheet.create({
   },
   droppingFish: {
     position: 'absolute',
+    top: 0,
     left: '50%',
     marginLeft: -75,
     width: 150,
