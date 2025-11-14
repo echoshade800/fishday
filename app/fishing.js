@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, ImageBackground, PanResponder, Easing, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { Audio } from 'expo-av';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Pause, Fish as FishIcon, Volume2, VolumeX, Vibrate } from 'lucide-react-native';
@@ -48,6 +49,7 @@ export default function FishingScreen() {
   const { addCatch, catches } = useGameStore();
 
   const [gamePhase, setGamePhase] = useState('ready');
+  const successSoundRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showPauseMenu, setShowPauseMenu] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -184,6 +186,38 @@ export default function FishingScreen() {
       rippleAnim.setValue(0);
     }
   }, [isDragging]);
+
+  useEffect(() => {
+    loadSuccessSound();
+    return () => {
+      if (successSoundRef.current) {
+        successSoundRef.current.unloadAsync();
+      }
+    };
+  }, []);
+
+  const loadSuccessSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/ocean.MP3' },
+        { shouldPlay: false }
+      );
+      successSoundRef.current = sound;
+    } catch (error) {
+      console.log('Failed to load success sound:', error);
+    }
+  };
+
+  const playSuccessSound = async () => {
+    if (soundEnabled && successSoundRef.current) {
+      try {
+        await successSoundRef.current.setPositionAsync(0);
+        await successSoundRef.current.playAsync();
+      } catch (error) {
+        console.log('Failed to play success sound:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     const animations = swimmingFish.map((fish, index) => {
@@ -601,6 +635,9 @@ export default function FishingScreen() {
       if (Platform.OS !== 'web') {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
+
+      // Play success sound
+      playSuccessSound();
 
       if (newSuccessCount >= 3) {
         // Clear reeling timeout and interval
