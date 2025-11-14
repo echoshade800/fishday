@@ -1731,8 +1731,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -15,
     right: -15,
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     zIndex: 1,
   },
   fishImageCircle: {
