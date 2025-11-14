@@ -74,7 +74,6 @@ export default function EncyclopediaScreen() {
             <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
           </TouchableOpacity>
           <Text style={styles.title}>Fish Book</Text>
-          <Text style={styles.subtitle}>{FISH_DATA.length} species</Text>
         </View>
 
         <FlatList
@@ -110,11 +109,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#0F172A',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748B',
   },
   list: {
     padding: 20,
