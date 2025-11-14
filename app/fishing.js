@@ -1355,7 +1355,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: 80,
     left: 20,
     zIndex: 200,
   },
@@ -1374,7 +1374,7 @@ const styles = StyleSheet.create({
   },
   instructionContainer: {
     position: 'absolute',
-    top: 60,
+    top: 90,
     left: SCREEN_WIDTH / 2 - 100,
     width: 200,
     flexDirection: 'row',
