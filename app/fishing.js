@@ -646,8 +646,9 @@ export default function FishingScreen() {
       }
     } else {
       // Resume the rotation animation only if in reeling phase
-      if (gamePhase === 'reeling' && rotationAnimationRef.current) {
-        rotationAnimationRef.current.start();
+      if (gamePhase === 'reeling') {
+        // Re-create and start the animation
+        startPointerRotation();
       }
     }
   }, [showPauseMenu, gamePhase]);
