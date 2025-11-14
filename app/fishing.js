@@ -50,6 +50,7 @@ export default function FishingScreen() {
 
   const [gamePhase, setGamePhase] = useState('ready');
   const successSoundRef = useRef(null);
+  const bgMusicRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showPauseMenu, setShowPauseMenu] = useState(false);
   const [showFailDialog, setShowFailDialog] = useState(false);
@@ -194,6 +195,7 @@ export default function FishingScreen() {
           shouldDuckAndroid: true,
         });
         await loadSuccessSound();
+        await loadBgMusic();
       } catch (error) {
         console.log('Failed to setup audio:', error);
       }
@@ -203,6 +205,9 @@ export default function FishingScreen() {
     return () => {
       if (successSoundRef.current) {
         successSoundRef.current.unloadAsync();
+      }
+      if (bgMusicRef.current) {
+        bgMusicRef.current.unloadAsync();
       }
     };
   }, []);
@@ -218,6 +223,20 @@ export default function FishingScreen() {
       console.log('Success sound loaded successfully');
     } catch (error) {
       console.log('Failed to load success sound:', error);
+    }
+  };
+
+  const loadBgMusic = async () => {
+    try {
+      console.log('Loading background music...');
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: 'https://dzdbhsix5ppsc.cloudfront.net/monster/fishgame/sunshine.MP3' },
+        { shouldPlay: settings.soundEnabled, isLooping: true, volume: 0.5 }
+      );
+      bgMusicRef.current = sound;
+      console.log('Background music loaded successfully');
+    } catch (error) {
+      console.log('Failed to load background music:', error);
     }
   };
 
@@ -1449,7 +1468,17 @@ export default function FishingScreen() {
               {/* Sound Toggle */}
               <TouchableOpacity
                 style={styles.settingRow}
-                onPress={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
+                onPress={async () => {
+                  const newSoundEnabled = !settings.soundEnabled;
+                  updateSettings({ soundEnabled: newSoundEnabled });
+                  if (bgMusicRef.current) {
+                    if (newSoundEnabled) {
+                      await bgMusicRef.current.playAsync();
+                    } else {
+                      await bgMusicRef.current.pauseAsync();
+                    }
+                  }
+                }}
                 activeOpacity={0.7}
               >
                 <View style={styles.settingLeft}>
