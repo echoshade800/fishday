@@ -1374,7 +1374,7 @@ const styles = StyleSheet.create({
   },
   instructionContainer: {
     position: 'absolute',
-    top: 90,
+    top: 80,
     left: SCREEN_WIDTH / 2 - 100,
     width: 200,
     flexDirection: 'row',
