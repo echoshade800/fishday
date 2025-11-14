@@ -10,6 +10,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
+import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '../store/gameStore';
 import { GAME_CONFIG } from '../constants/gameConfig';
 import { getRandomFish } from '../constants/fishData';
@@ -1063,7 +1064,12 @@ export default function FishingScreen() {
 
           {/* Fish Info Card */}
           <View style={styles.fishInfoCard}>
-            <View style={styles.fishImageCircle}>
+            <ExpoLinearGradient
+              colors={['#FF6B6B', '#FFD93D', '#6BCF7F', '#4ECDC4', '#95E1D3', '#A78BFA', '#EC4899']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.fishImageCircle}
+            >
               <Image
                 source={{ uri: caughtFish.imagePlaceholderUrl }}
                 style={styles.fishCardImage}
@@ -1071,7 +1077,7 @@ export default function FishingScreen() {
                 onLoad={() => console.log('Card fish image loaded:', caughtFish.imagePlaceholderUrl)}
                 onError={(e) => console.log('Card fish error:', e.nativeEvent.error)}
               />
-            </View>
+            </ExpoLinearGradient>
             <View style={styles.fishInfoContent}>
               <Text style={styles.fishCardName}>{caughtFish.name}</Text>
               <View style={styles.rarityStars}>
@@ -1695,7 +1701,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
