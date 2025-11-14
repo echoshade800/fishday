@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 20,
     paddingBottom: 12,
+    marginTop: 20,
     zIndex: 100,
   },
   backButtonText: {
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    paddingTop: 0,
+    paddingTop: 20,
   },
   settingsCard: {
     marginBottom: 16,
