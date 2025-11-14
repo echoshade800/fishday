@@ -46,7 +46,7 @@ const createSwimmingFish = (index) => {
 
 export default function FishingScreen() {
   const router = useRouter();
-  const { addCatch, catches, settings, updateSettings } = useGameStore();
+  const { addCatch, catches, settings, updateSettings, useTry, getRemainingTries } = useGameStore();
 
   const [gamePhase, setGamePhase] = useState('ready');
   const successSoundRef = useRef(null);
@@ -498,8 +498,11 @@ export default function FishingScreen() {
     })
   ).current;
 
-  const performCast = (targetX, targetY) => {
+  const performCast = async (targetX, targetY) => {
     setGamePhase('casting');
+
+    // Use one try when casting
+    await useTry();
 
     const startX = CHARACTER_X + 6;
     const startY = CHARACTER_Y;
@@ -1389,20 +1392,32 @@ export default function FishingScreen() {
             <Text style={styles.resultMessage}>The fish got away!</Text>
             <Text style={styles.resultSubMessage}>Try again to improve your timing</Text>
             <View style={styles.dialogButtons}>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.cancelButton]}
-                onPress={handleRestart}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.cancelButtonText}>Restart</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.confirmButton]}
-                onPress={handleHome}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.confirmButtonText}>Home</Text>
-              </TouchableOpacity>
+              {getRemainingTries() > 0 ? (
+                <>
+                  <TouchableOpacity
+                    style={[styles.dialogButton, styles.cancelButton]}
+                    onPress={handleRestart}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.cancelButtonText}>Restart</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.dialogButton, styles.confirmButton]}
+                    onPress={handleHome}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.confirmButtonText}>Home</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.dialogButton, styles.confirmButton, { flex: 1 }]}
+                  onPress={handleHome}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.confirmButtonText}>Back to Home</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
@@ -1484,23 +1499,38 @@ export default function FishingScreen() {
               You missed the fish 3 times. Better luck next time!
             </Text>
             <View style={styles.dialogButtons}>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.cancelButton]}
-                onPress={() => {
-                  setShowFailDialog(false);
-                  router.push('/home');
-                }}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.cancelButtonText}>Back to Home</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dialogButton, styles.confirmButton]}
-                onPress={handleRestart}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.confirmButtonText}>Restart</Text>
-              </TouchableOpacity>
+              {getRemainingTries() > 0 ? (
+                <>
+                  <TouchableOpacity
+                    style={[styles.dialogButton, styles.cancelButton]}
+                    onPress={() => {
+                      setShowFailDialog(false);
+                      router.push('/home');
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.cancelButtonText}>Back to Home</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.dialogButton, styles.confirmButton]}
+                    onPress={handleRestart}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.confirmButtonText}>Restart</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.dialogButton, styles.confirmButton, { flex: 1 }]}
+                  onPress={() => {
+                    setShowFailDialog(false);
+                    router.push('/home');
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.confirmButtonText}>Back to Home</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
