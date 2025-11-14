@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image, ImageBackground, PanResponder, Easing } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Fish as FishIcon } from 'lucide-react-native';
+import { Pause, Fish as FishIcon, Volume2, VolumeX, Vibrate } from 'lucide-react-native';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '../store/gameStore';
@@ -48,7 +48,9 @@ export default function FishingScreen() {
 
   const [gamePhase, setGamePhase] = useState('ready');
   const [isDragging, setIsDragging] = useState(false);
-  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showPauseMenu, setShowPauseMenu] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [showFailDialog, setShowFailDialog] = useState(false);
   const [missedCount, setMissedCount] = useState(0);
   const [castPosition, setCastPosition] = useState({
@@ -861,15 +863,15 @@ export default function FishingScreen() {
       )}
 
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']} pointerEvents="box-none">
-        {/* Back button */}
+        {/* Pause button */}
         <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => setShowExitDialog(true)}
+          style={styles.pauseButton}
+          onPress={() => setShowPauseMenu(true)}
           activeOpacity={0.7}
           pointerEvents="auto"
         >
-          <View style={styles.backButtonCircle}>
-            <ArrowLeft size={24} color="#334155" />
+          <View style={styles.pauseButtonCircle}>
+            <Pause size={24} color="#334155" />
           </View>
         </TouchableOpacity>
 
@@ -1164,31 +1166,67 @@ export default function FishingScreen() {
         </View>
       )}
 
-      {/* Exit Confirmation Dialog */}
-      {showExitDialog && (
-        <View style={styles.dialogOverlay}>
-          <View style={styles.dialogCard}>
-            <Text style={styles.dialogTitle}>Leave Game?</Text>
-            <Text style={styles.dialogMessage}>
-              Are you sure you want to leave the fishing session?
-            </Text>
-            <View style={styles.dialogButtons}>
+      {/* Pause Menu */}
+      {showPauseMenu && (
+        <View style={styles.pauseOverlay}>
+          <View style={styles.pauseCard}>
+            <Text style={styles.pauseTitle}>Game Paused</Text>
+
+            {/* Settings Section */}
+            <View style={styles.settingsSection}>
+              {/* Sound Toggle */}
               <TouchableOpacity
-                style={[styles.dialogButton, styles.cancelButton]}
-                onPress={() => setShowExitDialog(false)}
+                style={styles.settingRow}
+                onPress={() => setSoundEnabled(!soundEnabled)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.settingLeft}>
+                  {soundEnabled ? (
+                    <Volume2 size={24} color="#3B82F6" />
+                  ) : (
+                    <VolumeX size={24} color="#94A3B8" />
+                  )}
+                  <Text style={styles.settingLabel}>Sound</Text>
+                </View>
+                <View style={[styles.toggle, soundEnabled && styles.toggleActive]}>
+                  <View style={[styles.toggleThumb, soundEnabled && styles.toggleThumbActive]} />
+                </View>
+              </TouchableOpacity>
+
+              {/* Vibration Toggle */}
+              <TouchableOpacity
+                style={styles.settingRow}
+                onPress={() => setVibrationEnabled(!vibrationEnabled)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.settingLeft}>
+                  <Vibrate size={24} color={vibrationEnabled ? "#3B82F6" : "#94A3B8"} />
+                  <Text style={styles.settingLabel}>Vibration</Text>
+                </View>
+                <View style={[styles.toggle, vibrationEnabled && styles.toggleActive]}>
+                  <View style={[styles.toggleThumb, vibrationEnabled && styles.toggleThumbActive]} />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.pauseButtons}>
+              <TouchableOpacity
+                style={[styles.pauseButton, styles.resumeButton]}
+                onPress={() => setShowPauseMenu(false)}
                 activeOpacity={0.8}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.resumeButtonText}>Resume</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.dialogButton, styles.confirmButton]}
+                style={[styles.pauseButton, styles.homeButton]}
                 onPress={() => {
-                  setShowExitDialog(false);
+                  setShowPauseMenu(false);
                   router.push('/home');
                 }}
                 activeOpacity={0.8}
               >
-                <Text style={styles.confirmButtonText}>Yes</Text>
+                <Text style={styles.homeButtonText}>Home</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1353,14 +1391,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  backButton: {
+  pauseButton: {
     position: 'absolute',
     top: 80,
     left: 20,
     zIndex: 1000,
     elevation: 1000,
   },
-  backButtonCircle: {
+  pauseButtonCircle: {
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -1372,6 +1410,121 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
+  },
+  pauseOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2000,
+  },
+  pauseCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    width: SCREEN_WIDTH * 0.85,
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  pauseTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  settingsSection: {
+    marginBottom: 24,
+    gap: 16,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  settingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  settingLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#334155',
+  },
+  toggle: {
+    width: 48,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#CBD5E1',
+    padding: 2,
+    justifyContent: 'center',
+  },
+  toggleActive: {
+    backgroundColor: '#3B82F6',
+  },
+  toggleThumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  toggleThumbActive: {
+    alignSelf: 'flex-end',
+  },
+  pauseButtons: {
+    gap: 12,
+  },
+  resumeButton: {
+    backgroundColor: '#10B981',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  resumeButtonText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  homeButton: {
+    backgroundColor: '#EF4444',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#EF4444',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  homeButtonText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   instructionContainer: {
     position: 'absolute',
