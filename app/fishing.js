@@ -1811,7 +1811,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: SCREEN_HEIGHT * 0.15,
+    bottom: SCREEN_HEIGHT * 0.02,
     alignItems: 'center',
     zIndex: 600,
   },
