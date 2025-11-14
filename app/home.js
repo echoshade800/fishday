@@ -93,23 +93,25 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           {/* Navigation buttons */}
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={() => router.push('/encyclopedia')}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.navButtonIcon}>📚</Text>
-            <Text style={styles.navButtonText}>Encyclopedia</Text>
-          </TouchableOpacity>
+          <View style={styles.navButtonRow}>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={() => router.push('/encyclopedia')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.navButtonIcon}>📚</Text>
+              <Text style={styles.navButtonText}>Fish Book</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={() => router.push('/profile')}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.navButtonIcon}>👤</Text>
-            <Text style={styles.navButtonText}>Profile</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={() => router.push('/profile')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.navButtonIcon}>👤</Text>
+              <Text style={styles.navButtonText}>Profile</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Stats dashboard */}
           <View style={styles.statsDashboard}>
@@ -224,16 +226,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.5,
   },
-  navButton: {
+  navButtonRow: {
     width: '100%',
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  navButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(224, 242, 254, 0.85)',
     paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     borderRadius: 16,
-    marginBottom: 12,
   },
   navButtonIcon: {
     fontSize: 24,
