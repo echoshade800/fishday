@@ -59,14 +59,14 @@ export default function HomeScreen() {
     >
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <View style={styles.content}>
-          {/* Main title */}
-          <View style={styles.titleSection}>
-            <Text style={styles.mainTitle}>🎣 FishyDay</Text>
-            <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
-          </View>
-
-          {/* Center content with button and cards */}
+          {/* Center content with title, button and cards */}
           <View style={styles.centerContent}>
+            {/* Main title */}
+            <View style={styles.titleSection}>
+              <Text style={styles.mainTitle}>🎣 FishyDay</Text>
+              <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
+            </View>
+
             {/* Main action button */}
             <TouchableOpacity
               style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     alignItems: 'center',
-    marginTop: 40,
+    marginBottom: 32,
   },
   mainTitle: {
     fontSize: 48,
