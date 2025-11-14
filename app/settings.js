@@ -3,7 +3,7 @@
  * Purpose: User preferences for sound and vibration
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -16,12 +16,8 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { settings, updateSettings } = useGameStore();
 
-  const [localSettings, setLocalSettings] = useState(settings);
-
   const handleToggleSetting = async (key, value) => {
-    const newSettings = { ...localSettings, [key]: value };
-    setLocalSettings(newSettings);
-    await updateSettings(newSettings);
+    await updateSettings({ [key]: value });
   };
 
   return (
@@ -43,7 +39,7 @@ export default function ProfileScreen() {
               <View style={styles.settingRow}>
                 <Text style={styles.settingLabel}>Sound Effects</Text>
                 <Switch
-                  value={localSettings.soundEnabled}
+                  value={settings.soundEnabled}
                   onValueChange={(value) => handleToggleSetting('soundEnabled', value)}
                   trackColor={{ false: '#CBD5E1', true: '#0891B2' }}
                   thumbColor="#FFFFFF"
@@ -53,7 +49,7 @@ export default function ProfileScreen() {
               <View style={styles.settingRow}>
                 <Text style={styles.settingLabel}>Vibration</Text>
                 <Switch
-                  value={localSettings.vibrationEnabled}
+                  value={settings.vibrationEnabled}
                   onValueChange={(value) => handleToggleSetting('vibrationEnabled', value)}
                   trackColor={{ false: '#CBD5E1', true: '#0891B2' }}
                   thumbColor="#FFFFFF"

@@ -46,14 +46,12 @@ const createSwimmingFish = (index) => {
 
 export default function FishingScreen() {
   const router = useRouter();
-  const { addCatch, catches } = useGameStore();
+  const { addCatch, catches, settings, updateSettings } = useGameStore();
 
   const [gamePhase, setGamePhase] = useState('ready');
   const successSoundRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showPauseMenu, setShowPauseMenu] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [showFailDialog, setShowFailDialog] = useState(false);
   const [missedCount, setMissedCount] = useState(0);
   const [castPosition, setCastPosition] = useState({
@@ -224,8 +222,8 @@ export default function FishingScreen() {
   };
 
   const playSuccessSound = async () => {
-    console.log('playSuccessSound called, soundEnabled:', soundEnabled, 'soundRef exists:', !!successSoundRef.current);
-    if (soundEnabled && successSoundRef.current) {
+    console.log('playSuccessSound called, soundEnabled:', settings.soundEnabled, 'soundRef exists:', !!successSoundRef.current);
+    if (settings.soundEnabled && successSoundRef.current) {
       try {
         console.log('Playing success sound...');
         await successSoundRef.current.setPositionAsync(0);
@@ -235,7 +233,7 @@ export default function FishingScreen() {
         console.log('Failed to play success sound:', error);
       }
     } else {
-      console.log('Sound not played - soundEnabled:', soundEnabled, 'sound exists:', !!successSoundRef.current);
+      console.log('Sound not played - soundEnabled:', settings.soundEnabled, 'sound exists:', !!successSoundRef.current);
     }
   };
 
@@ -652,7 +650,7 @@ export default function FishingScreen() {
       setReelingSuccessCount(newSuccessCount);
 
       // Trigger strong and long haptic feedback on successful tap
-      if (Platform.OS !== 'web') {
+      if (settings.vibrationEnabled && Platform.OS !== 'web') {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
 
@@ -1421,34 +1419,34 @@ export default function FishingScreen() {
               {/* Sound Toggle */}
               <TouchableOpacity
                 style={styles.settingRow}
-                onPress={() => setSoundEnabled(!soundEnabled)}
+                onPress={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
                 activeOpacity={0.7}
               >
                 <View style={styles.settingLeft}>
-                  {soundEnabled ? (
+                  {settings.soundEnabled ? (
                     <Volume2 size={24} color="#0891B2" />
                   ) : (
                     <VolumeX size={24} color="#94A3B8" />
                   )}
                   <Text style={styles.settingLabel}>Sound</Text>
                 </View>
-                <View style={[styles.toggle, soundEnabled && styles.toggleActive]}>
-                  <View style={[styles.toggleThumb, soundEnabled && styles.toggleThumbActive]} />
+                <View style={[styles.toggle, settings.soundEnabled && styles.toggleActive]}>
+                  <View style={[styles.toggleThumb, settings.soundEnabled && styles.toggleThumbActive]} />
                 </View>
               </TouchableOpacity>
 
               {/* Vibration Toggle */}
               <TouchableOpacity
                 style={styles.settingRow}
-                onPress={() => setVibrationEnabled(!vibrationEnabled)}
+                onPress={() => updateSettings({ vibrationEnabled: !settings.vibrationEnabled })}
                 activeOpacity={0.7}
               >
                 <View style={styles.settingLeft}>
-                  <Vibrate size={24} color={vibrationEnabled ? "#0891B2" : "#94A3B8"} />
+                  <Vibrate size={24} color={settings.vibrationEnabled ? "#0891B2" : "#94A3B8"} />
                   <Text style={styles.settingLabel}>Vibration</Text>
                 </View>
-                <View style={[styles.toggle, vibrationEnabled && styles.toggleActive]}>
-                  <View style={[styles.toggleThumb, vibrationEnabled && styles.toggleThumbActive]} />
+                <View style={[styles.toggle, settings.vibrationEnabled && styles.toggleActive]}>
+                  <View style={[styles.toggleThumb, settings.vibrationEnabled && styles.toggleThumbActive]} />
                 </View>
               </TouchableOpacity>
             </View>
