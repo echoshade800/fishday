@@ -5,19 +5,57 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, Star } from 'lucide-react-native';
 import { FISH_DATA } from '../constants/fishData';
-import FishCard from '../components/FishCard';
+import { useGameStore } from '../store/gameStore';
+
+const PLACEHOLDER_IMAGE = 'https://osopsbsfioallukblucj.supabase.co/storage/v1/object/public/fishy/wenhaofish.png';
 
 export default function EncyclopediaScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const catches = useGameStore((state) => state.catches);
+
+  const caughtFishIds = new Set(catches.map((c) => c.fishId));
 
   const handleFishPress = (fishId) => {
     router.push(`/details/${fishId}`);
+  };
+
+  const renderFishItem = ({ item }) => {
+    const isCaught = caughtFishIds.has(item.id);
+    const imageUrl = isCaught ? item.imagePlaceholderUrl : PLACEHOLDER_IMAGE;
+
+    return (
+      <TouchableOpacity
+        style={styles.fishItem}
+        onPress={() => handleFishPress(item.id)}
+        activeOpacity={0.7}
+      >
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.fishImage}
+          resizeMode="contain"
+        />
+        <Text style={styles.fishName} numberOfLines={2}>
+          {item.name}
+        </Text>
+        <View style={styles.starContainer}>
+          {Array.from({ length: item.rarity }).map((_, index) => (
+            <Star
+              key={index}
+              size={14}
+              color="#FCD34D"
+              fill="#FCD34D"
+              strokeWidth={1.5}
+            />
+          ))}
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -40,16 +78,14 @@ export default function EncyclopediaScreen() {
         </View>
 
         <FlatList
-            data={FISH_DATA}
-            renderItem={({ item }) => (
-              <FishCard fish={item} onPress={() => handleFishPress(item.id)} />
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 20 }]}
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-          />
+          data={FISH_DATA}
+          renderItem={renderFishItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 20 }]}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+        />
       </SafeAreaView>
     </ImageBackground>
   );
@@ -85,6 +121,29 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   row: {
-    gap: 12,
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    marginBottom: 24,
+  },
+  fishItem: {
+    width: '45%',
+    alignItems: 'center',
+  },
+  fishImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 8,
+  },
+  fishName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0F172A',
+    textAlign: 'center',
+    marginBottom: 4,
+    paddingHorizontal: 4,
+  },
+  starContainer: {
+    flexDirection: 'row',
+    gap: 2,
   },
 });
