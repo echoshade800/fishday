@@ -522,28 +522,31 @@ export default function FishingScreen() {
 
   const startPointerRotation = () => {
     console.log('Starting pointer rotation...');
+
+    // Clean up any existing listeners
+    pointerRotation.removeAllListeners();
+
     pointerRotation.setValue(0);
     currentRotationRef.current = 0;
     isPausedRef.current = false;
 
-    const createRotationLoop = () => {
-      return Animated.loop(
-        Animated.timing(pointerRotation, {
-          toValue: 360,
-          duration: 2000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        })
-      );
-    };
-
+    // Add listener to track rotation value
     pointerRotation.addListener(({ value }) => {
       if (!isPausedRef.current) {
         currentRotationRef.current = value % 360;
       }
     });
 
-    const rotationAnimation = createRotationLoop();
+    // Start infinite rotation loop
+    const rotationAnimation = Animated.loop(
+      Animated.timing(pointerRotation, {
+        toValue: 360,
+        duration: 2000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      })
+    );
+
     rotationAnimation.start();
     rotationAnimationRef.current = rotationAnimation;
     console.log('Rotation animation started');
@@ -659,6 +662,7 @@ export default function FishingScreen() {
     if (gamePhase === 'reeling') {
       if (showPauseMenu) {
         // Pause the rotation animation
+        console.log('Pausing rotation');
         isPausedRef.current = true;
         if (rotationAnimationRef.current) {
           pointerRotation.stopAnimation((value) => {
@@ -666,24 +670,32 @@ export default function FishingScreen() {
             const normalizedValue = value % 360;
             currentRotationRef.current = normalizedValue;
             pointerRotation.setValue(normalizedValue);
+            console.log('Paused at rotation:', normalizedValue);
           });
         }
       } else if (isPausedRef.current) {
         // Resume from the paused position
+        console.log('Resuming rotation from:', currentRotationRef.current);
         isPausedRef.current = false;
 
-        // Calculate the remaining distance to complete a full rotation
-        const currentValue = currentRotationRef.current;
-        const targetValue = currentValue + 360;
+        // Get current position and create continuous loop from there
+        const startValue = pointerRotation._value;
+        console.log('Starting from value:', startValue);
 
-        // Calculate the duration proportionally
-        const fullDuration = 2000;
+        // Re-add the listener for tracking rotation
+        pointerRotation.removeAllListeners();
+        pointerRotation.addListener(({ value }) => {
+          if (!isPausedRef.current) {
+            currentRotationRef.current = value % 360;
+          }
+        });
 
-        // Create a seamless loop animation from current position
+        // Create infinite loop that continues from current position
+        // Each cycle goes from current to current+360
         const resumeAnimation = Animated.loop(
           Animated.timing(pointerRotation, {
-            toValue: targetValue,
-            duration: fullDuration,
+            toValue: startValue + 360,
+            duration: 2000,
             easing: Easing.linear,
             useNativeDriver: false,
           })
@@ -691,6 +703,7 @@ export default function FishingScreen() {
 
         resumeAnimation.start();
         rotationAnimationRef.current = resumeAnimation;
+        console.log('Rotation resumed');
       }
     }
 
