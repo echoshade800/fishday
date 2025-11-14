@@ -5,7 +5,7 @@
 
 export const GAME_CONFIG = {
   // Daily tries system
-  DAILY_TRIES_LIMIT: 3,
+  DAILY_TRIES_LIMIT: 5,
 
   // Fishing gameplay timing (in milliseconds)
   BITE_DELAY_MIN: 2500,
