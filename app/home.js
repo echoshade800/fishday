@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   actionContainer: {
     alignItems: 'center',
     width: '100%',
-    marginTop: 10,
+    marginTop: 110,
   },
   mainButton: {
     width: '65%',
