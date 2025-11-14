@@ -69,6 +69,17 @@ export default function HomeScreen() {
             <Text style={styles.mainSubtitle}>Relax. Cast. Catch.</Text>
           </View>
 
+          {/* Feature cards */}
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>🌊</Text>
+            <Text style={styles.featureText}>Peaceful oceanic experience</Text>
+          </View>
+
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>🐠</Text>
+            <Text style={styles.featureText}>Collect 16 unique fish species</Text>
+          </View>
+
           {/* Main action button */}
           <TouchableOpacity
             style={[styles.mainButton, !canFish && styles.mainButtonDisabled]}
@@ -169,6 +180,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     opacity: 0.8,
     fontStyle: 'italic',
+  },
+  featureCard: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 16,
+    marginBottom: 10,
+  },
+  featureIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  featureText: {
+    fontSize: 15,
+    color: '#1E3A5F',
+    fontWeight: '500',
+    flex: 1,
   },
   mainButton: {
     width: '100%',
