@@ -1277,7 +1277,7 @@ const styles = StyleSheet.create({
   },
   characterImage: {
     position: 'absolute',
-    bottom: SCREEN_HEIGHT * 0.15 + 50,
+    bottom: SCREEN_HEIGHT * 0.15,
     left: SCREEN_WIDTH * 0.35,
     width: SCREEN_WIDTH * 0.3,
     height: SCREEN_HEIGHT * 0.4,
