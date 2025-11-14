@@ -9,6 +9,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../store/gameStore';
+import { BookOpen, User } from 'lucide-react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -85,7 +86,7 @@ export default function HomeScreen() {
                 onPress={() => router.push('/encyclopedia')}
                 activeOpacity={0.8}
               >
-                <Text style={styles.navButtonIcon}>📚</Text>
+                <BookOpen size={32} color="#0891B2" strokeWidth={2.5} />
                 <Text style={styles.navButtonText}>Fish Book</Text>
               </TouchableOpacity>
 
@@ -94,7 +95,7 @@ export default function HomeScreen() {
                 onPress={() => router.push('/profile')}
                 activeOpacity={0.8}
               >
-                <Text style={styles.navButtonIcon}>👤</Text>
+                <User size={32} color="#0891B2" strokeWidth={2.5} />
                 <Text style={styles.navButtonText}>Profile</Text>
               </TouchableOpacity>
             </View>
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mainButton: {
-    width: '80%',
+    width: '65%',
     backgroundColor: '#0891B2',
     paddingVertical: 20,
     borderRadius: 30,
@@ -197,25 +198,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   navButton: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 20,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 4,
-  },
-  navButtonIcon: {
-    fontSize: 40,
-    marginBottom: 8,
+    gap: 8,
   },
   navButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#1E3A5F',
     fontWeight: '600',
   },
