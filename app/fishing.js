@@ -1374,6 +1374,21 @@ export default function FishingScreen() {
               <Text style={styles.successButtonText}>Fish Book</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              style={[
+                styles.successButton,
+                styles.restartButton,
+                getRemainingTries() === 0 && styles.buttonDisabledStyle
+              ]}
+              onPress={handleRestart}
+              activeOpacity={0.8}
+              disabled={getRemainingTries() === 0}
+            >
+              <Text style={[
+                styles.successButtonText,
+                getRemainingTries() === 0 && styles.disabledButtonText
+              ]}>Restart</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={[styles.successButton, styles.homeButton]}
               onPress={handleHome}
               activeOpacity={0.8}
@@ -2243,13 +2258,23 @@ const styles = StyleSheet.create({
   encyclopediaButton: {
     backgroundColor: '#4ECDC4',
   },
+  restartButton: {
+    backgroundColor: '#10B981',
+  },
   homeButton: {
     backgroundColor: '#FF6B6B',
+  },
+  buttonDisabledStyle: {
+    backgroundColor: '#94A3B8',
+    opacity: 0.6,
   },
   successButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  disabledButtonText: {
+    color: '#E2E8F0',
   },
   debugText: {
     position: 'absolute',
