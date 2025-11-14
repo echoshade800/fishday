@@ -1683,8 +1683,8 @@ const styles = StyleSheet.create({
   fishInfoCard: {
     position: 'absolute',
     bottom: 90,
-    left: 20,
-    right: 20,
+    left: 40,
+    right: 40,
     backgroundColor: '#FFD93D',
     borderRadius: 20,
     flexDirection: 'row',
@@ -1719,7 +1719,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   fishCardName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2D3748',
     marginBottom: 8,
