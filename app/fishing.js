@@ -1182,7 +1182,7 @@ export default function FishingScreen() {
               >
                 <View style={styles.settingLeft}>
                   {soundEnabled ? (
-                    <Volume2 size={24} color="#3B82F6" />
+                    <Volume2 size={24} color="#0891B2" />
                   ) : (
                     <VolumeX size={24} color="#94A3B8" />
                   )}
@@ -1200,7 +1200,7 @@ export default function FishingScreen() {
                 activeOpacity={0.7}
               >
                 <View style={styles.settingLeft}>
-                  <Vibrate size={24} color={vibrationEnabled ? "#3B82F6" : "#94A3B8"} />
+                  <Vibrate size={24} color={vibrationEnabled ? "#0891B2" : "#94A3B8"} />
                   <Text style={styles.settingLabel}>Vibration</Text>
                 </View>
                 <View style={[styles.toggle, vibrationEnabled && styles.toggleActive]}>
@@ -1475,7 +1475,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleActive: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#0891B2',
   },
   toggleThumb: {
     width: 24,
