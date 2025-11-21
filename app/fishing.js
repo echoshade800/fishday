@@ -1524,10 +1524,7 @@ export default function FishingScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.pauseHomeButton}
-                onPress={() => {
-                  setShowPauseMenu(false);
-                  router.push('/home');
-                }}
+                onPress={handleHome}
                 activeOpacity={0.8}
               >
                 <Text style={styles.pauseHomeButtonText}>Home</Text>
